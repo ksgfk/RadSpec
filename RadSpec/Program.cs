@@ -1,11 +1,25 @@
-﻿using RadSpec;
+﻿using System.Diagnostics;
+using RadSpec;
 
-string a = "f     1//1          2/2/33             3/4        ";
-using StringReader reader = new(a);
-using WavefrontObjReader obj = new(reader);
-obj.Read();
-Console.WriteLine(obj.ErrorMessage);
-foreach (var i in obj.Faces)
-{
-    Console.WriteLine(i);
-}
+// using FileStream f = File.OpenRead("/Users/admin/Downloads/buddha.obj");
+// using WavefrontObjReader reader = new(f);
+
+// Stopwatch sw = Stopwatch.StartNew();
+
+// reader.Read();
+
+// sw.Stop();
+
+// Console.WriteLine(sw.ElapsedMilliseconds);
+
+// if (reader.ErrorMessage != null)
+// {
+//     Console.WriteLine(reader.ErrorMessage);
+// }
+// Console.WriteLine(reader.Positions.Count);
+// Console.WriteLine(reader.Faces.Count);
+
+using FileStream f = File.OpenRead("/Users/admin/Downloads/patchwork_chair_ply_0/Patchwork chair.ply");
+PlyReader r = new(f);
+r.ReadHeader();
+Console.WriteLine();

@@ -86,6 +86,22 @@ public class WavefrontObjReader : IDisposable
         }
     }
 
+    public void ReadByLine()
+    {
+        int lineNumber = 0;
+        StringBuilder errBuilder = new();
+        string? data;
+        while ((data = _reader.ReadLine()) != null)
+        {
+            lineNumber++;
+            Parse(data, lineNumber, errBuilder);
+        }
+        if (errBuilder.Length != 0)
+        {
+            _errorMessage = errBuilder.ToString();
+        }
+    }
+
     private void Parse(ReadOnlySpan<char> line, int lineNumber, StringBuilder errBuilder)
     {
         line = line.Trim();
@@ -220,9 +236,8 @@ public class WavefrontObjReader : IDisposable
             {
                 return false;
             }
-            ReadOnlySpan<char> t = n[..b];
             o = n[(b + 1)..].TrimStart();
-            n = t;
+            n = n[..b];
             int c = o.IndexOf(' ');
             if (c != -1)
             {
@@ -253,9 +268,8 @@ public class WavefrontObjReader : IDisposable
             {
                 return false;
             }
-            ReadOnlySpan<char> t = n[..b];
             o = n[(b + 1)..].TrimStart();
-            n = t;
+            n = n[..b];
             int c = o.IndexOf(' ');
             if (c != -1)
             {
