@@ -19,7 +19,9 @@ using RadSpec;
 // Console.WriteLine(reader.Positions.Count);
 // Console.WriteLine(reader.Faces.Count);
 
-using FileStream f = File.OpenRead("/Users/admin/Downloads/patchwork_chair_ply_0/Patchwork chair.ply");
+using FileStream f = File.OpenRead("D:\\download\\Dragon-ply\\Dragon-ply.ply");
+//using FileStream f = File.OpenRead("D:\\download\\Patchwork chair.ply");
 PlyReader r = new(f);
 r.ReadHeader();
+r.ReadData();
 Console.WriteLine();
