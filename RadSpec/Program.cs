@@ -21,19 +21,19 @@ using RadSpec;
 // Console.WriteLine(reader.Positions.Count);
 // Console.WriteLine(reader.Faces.Count);
 
-using FileStream f = File.OpenRead("/Users/admin/Desktop/Fantasy Dragon.ply");
-// using FileStream f = File.OpenRead("D:\\download\\Dragon-ply\\Dragon-ply.ply");
-//using FileStream f = File.OpenRead("D:\\download\\Patchwork chair.ply");
+//using FileStream f = File.OpenRead("/Users/admin/Desktop/Fantasy Dragon.ply");
+using FileStream f = File.OpenRead("D:\\download\\Dragon-ply\\Dragon-ply.ply");
+//using FileStream f = File.OpenRead("C:\\Users\\ksgfk\\Desktop\\test.ply");
 PlyReader r = new(f);
-
 var sw = Stopwatch.StartNew();
-r.ReadHeader();
+PlyHeader h = r.ReadHeader();
+h.Elements.Find(i => i.Name == "face")!.Properties[0].ListLengthHint = 3;
 r.ReadData();
 sw.Stop();
 Console.WriteLine($"ms {sw.ElapsedMilliseconds}");
-var vert = r.Header!.Elements.Find(i => i.Name == "vertex")!;
-var face = r.Header!.Elements.Find(i => i.Name == "face")!;
-using StreamWriter d = File.CreateText("/Users/admin/Desktop/Fantasy Dragon.obj");
+var vert = h.Elements.Find(i => i.Name == "vertex")!;
+var face = h.Elements.Find(i => i.Name == "face")!;
+using StreamWriter d = File.CreateText("C:\\Users\\ksgfk\\Desktop\\test.obj");
 var t1 = MemoryMarshal.Cast<byte, Vector3>(vert.Data);
 foreach (var i in t1)
 {
