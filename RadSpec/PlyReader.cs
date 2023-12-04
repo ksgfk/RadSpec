@@ -1,4 +1,6 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace RadSpec;
 
@@ -60,10 +62,14 @@ public class PlyHeader
     public List<PlyElement> Elements { get; } = [];
 }
 
+public class PlyReadException : Exception
+{
+    public PlyReadException(string? message) : base(message) { }
+}
+
 public class PlyReader : IDisposable
 {
     private Stream _stream;
-    private StreamReader _headReader;
     private PlyHeader? _header;
     private bool disposedValue;
 
@@ -72,108 +78,184 @@ public class PlyReader : IDisposable
     public PlyReader(Stream stream)
     {
         _stream = stream;
-        _headReader = new(_stream);
+    }
+
+    private string? ReadLine(List<byte> buffer)
+    {
+        buffer.Clear();
+        int ch;
+        while ((ch = _stream.ReadByte()) != -1)
+        {
+            if (ch == '\r' || ch == '\n')
+            {
+                long nowPos = _stream.Position;
+                int next = _stream.ReadByte();
+                if (next != '\n')
+                {
+                    _stream.Position = nowPos;
+                }
+                break;
+            }
+            buffer.Add((byte)ch);
+        }
+        return ch == -1 ? null : Encoding.UTF8.GetString(CollectionsMarshal.AsSpan(buffer));
     }
 
     public void ReadHeader()
     {
-        var sr = _headReader;
-        string? data = sr.ReadLine();
-        if (data == null)
-        {
-            return;
-        }
-        bool isEnd = false;
+        List<byte> buffer = new(1024);
         PlyHeader header = new();
-        header.Magic = data;
-        while (!isEnd && (data = sr.ReadLine()) != null)
+        bool hasNextLine = true;
+        int lineNumber = 0;
+        do
         {
-            string[] opts = data.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            if (opts.Length == 0)
+            string? line = ReadLine(buffer);
+            if (line == null)
             {
-                continue;
+                break;
             }
-            switch (opts[0])
+            lineNumber++;
+            ReadOnlySpan<char> cmd;
+            ReadOnlySpan<char> data;
             {
+                int cmdIdx = line.IndexOf(' ');
+                ReadOnlySpan<char> ld = line.AsSpan();
+                if (cmdIdx == -1)
+                {
+                    cmd = ld;
+                    data = new();
+                }
+                else
+                {
+                    cmd = ld[..cmdIdx];
+                    data = ld[(cmdIdx + 1)..].Trim();
+                }
+            }
+            switch (cmd)
+            {
+                case "ply" or "PLY":
+                    if (header.Magic == null)
+                    {
+                        header.Magic = "ply";
+                    }
+                    else
+                    {
+                        throw new PlyReadException($"at line {lineNumber}: magic number is not first line");
+                    }
+                    break;
                 case "comment":
-                    header.Commits.Add(data[(data.IndexOf(' ') + 1)..]);
+                    header.Commits.Add(data.ToString());
+                    break;
+                case "end_header":
+                    hasNextLine = false;
                     break;
                 case "format":
-                    if (opts.Length >= 3)
                     {
-                        header.Format = opts[1] switch
+                        if (header.Version != null || header.Format != PlyFormat.Unknown)
+                        {
+                            throw new PlyReadException($"at line {lineNumber}: duplicate format");
+                        }
+                        int formatTypeIdx = data.IndexOf(' ');
+                        if (formatTypeIdx == -1)
+                        {
+                            throw new PlyReadException($"at line {lineNumber}: invalid header format");
+                        }
+                        ReadOnlySpan<char> format = data[..formatTypeIdx];
+                        ReadOnlySpan<char> ver = data[(formatTypeIdx + 1)..].TrimStart();
+                        header.Format = format switch
                         {
                             "ascii" => PlyFormat.Ascii,
                             "binary_little_endian" => PlyFormat.BinaryLittleEndian,
                             "binary_big_endian" => PlyFormat.BinaryBigEndian,
-                            _ => throw new ArgumentOutOfRangeException($"unknown ply format {opts[1]}")
+                            _ => throw new PlyReadException($"at line {lineNumber}: unknown ply format")
                         };
-                        header.Version = opts[2];
+                        header.Version = new string(ver);
+                        break;
                     }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException($"invalid ply header line: {data}");
-                    }
-                    break;
                 case "element":
-                    if (opts.Length >= 3)
                     {
+                        int nextIdx = data.IndexOf(' ');
+                        if (nextIdx == -1)
+                        {
+                            throw new PlyReadException($"at line {lineNumber}: invalid header element");
+                        }
+                        ReadOnlySpan<char> name = data[..nextIdx];
+                        ReadOnlySpan<char> num = data[(nextIdx + 1)..];
+                        if (!int.TryParse(num, out int length))
+                        {
+                            throw new PlyReadException($"at line {lineNumber}: invalid length number");
+                        }
                         PlyElement e = new()
                         {
-                            Name = opts[1],
-                            Length = int.Parse(opts[2])
+                            Name = new string(name),
+                            Length = length
                         };
                         header.Elements.Add(e);
+                        break;
                     }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException($"invalid ply header line: {data}");
-                    }
-                    break;
                 case "property":
-                    if (opts.Length >= 3)
                     {
-                        PlyType type = StringToType(opts[1].ToLower());
-                        PlyProperty p = new();
-                        if (type == PlyType.Unknown)
+                        int a = data.IndexOf(' ');
+                        if (a == -1)
                         {
-                            p.DataType = PlyType.Unknown;
-                            p.UserDataType = opts[1];
+                            throw new PlyReadException($"at line {lineNumber}: invalid header property");
                         }
-                        else
+                        ReadOnlySpan<char> typeD = data[..a];
+                        ReadOnlySpan<char> ad = data[(a + 1)..];
+                        PlyProperty p = new()
                         {
-                            p.DataType = type;
-                        }
-                        if (type == PlyType.List)
+                            DataType = StringToType(typeD)
+                        };
+                        if (p.DataType == PlyType.List)
                         {
-                            if (opts.Length < 5)
+                            int b = ad.IndexOf(' ');
+                            if (b == -1)
                             {
-                                throw new ArgumentOutOfRangeException($"invalid ply header line: {data}");
+                                throw new PlyReadException($"at line {lineNumber}: invalid header property");
                             }
-                            p.ListIndexType = StringToType(opts[2].ToLower());
-                            p.ListElementType = StringToType(opts[3].ToLower());
-                            p.Name = opts[4];
+                            ReadOnlySpan<char> idxType = ad[..b];
+                            ReadOnlySpan<char> bd = ad[(b + 1)..].TrimStart();
+                            p.ListIndexType = StringToType(idxType);
+                            if (p.ListIndexType == PlyType.Unknown)
+                            {
+                                throw new PlyReadException($"at line {lineNumber}: invalid header property");
+                            }
+                            int c = bd.IndexOf(' ');
+                            if (c == -1)
+                            {
+                                throw new PlyReadException($"at line {lineNumber}: invalid header property");
+                            }
+                            ReadOnlySpan<char> listElemType = bd[..c];
+                            ReadOnlySpan<char> listName = bd[(c + 1)..].TrimStart();
+                            p.ListElementType = StringToType(listElemType);
+                            if (p.ListElementType == PlyType.Unknown)
+                            {
+                                throw new PlyReadException($"at line {lineNumber}: invalid header property");
+                            }
+                            p.Name = new string(listName);
                         }
                         else
                         {
-                            p.Name = opts[2];
+                            if (p.DataType == PlyType.Unknown)
+                            {
+                                p.UserDataType = new string(typeD);
+                            }
+                            p.Name = new string(ad.TrimStart());
                         }
                         if (header.Elements.Count == 0)
                         {
-                            throw new ArgumentOutOfRangeException($"invalid ply header line: {data}");
+                            throw new PlyReadException($"at line {lineNumber}: invalid header property");
                         }
                         header.Elements[^1].Properties.Add(p);
+                        int listCount = header.Elements[^1].Properties.Count(tmp => tmp.DataType == PlyType.List);
+                        if (listCount > 1)
+                        {
+                            throw new PlyReadException($"at line {lineNumber}: element can only have one list");
+                        }
+                        break;
                     }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException($"unknown ply header line: {data}");
-                    }
-                    break;
-                case "end_header":
-                    isEnd = true;
-                    break;
             }
-        }
+        } while (hasNextLine);
         _header = header;
     }
 
@@ -181,105 +263,104 @@ public class PlyReader : IDisposable
     {
         if (_header == null)
         {
-            throw new InvalidOperationException();
+            throw new PlyReadException(null);
         }
         switch (_header.Format)
         {
             case PlyFormat.Ascii:
                 break;
             case PlyFormat.BinaryLittleEndian:
-                ReadLittleEndian();
+                ReadBinary(PlyFormat.BinaryLittleEndian);
                 break;
             case PlyFormat.BinaryBigEndian:
+                ReadBinary(PlyFormat.BinaryBigEndian);
                 break;
         }
     }
 
-    private void ReadLittleEndian()
+    private void ReadBinary(PlyFormat format)
     {
+        List<byte> data = new(1024);
         Span<byte> buffer = stackalloc byte[8];
-        foreach (var i in _header!.Elements)
+        bool needSwap = BitConverter.IsLittleEndian != (format == PlyFormat.BinaryLittleEndian);
+        foreach (PlyElement e in _header!.Elements)
         {
-            bool hasList = false;
-            int stride = 0;
-            foreach (var j in i.Properties)
+            data.Clear();
+            for (int i = 0; i < e.Length; i++)
             {
-                hasList = j.DataType == PlyType.List;
-                stride += TypeToByteCount(j.DataType);
-            }
-            if (hasList)
-            {
-                List<byte> data = new(4096);
-                for (int j = 0; j < i.Length; j++)
+                foreach (PlyProperty p in e.Properties)
                 {
-                    foreach (var k in i.Properties)
+                    if (p.DataType == PlyType.List)
                     {
-                        if (k.DataType == PlyType.List)
+                        int idxSize = TypeToByteCount(p.ListIndexType);
+                        long length;
                         {
-                            int length;
+                            Span<byte> bytes = buffer[..idxSize];
+                            long startPos = _stream.Position;
+                            int readSize = _stream.Read(bytes);
+                            if (idxSize != readSize)
                             {
-                                int lengthByte = TypeToByteCount(k.ListIndexType);
-                                Span<byte> lengthData = buffer[..lengthByte];
-                                if (_stream.Read(lengthData) != lengthByte)
-                                {
-                                    throw new ArgumentOutOfRangeException($"ply data error, expect:{lengthByte}");
-                                }
-                                length = k.ListIndexType switch
-                                {
-                                    PlyType.Int8 => lengthData[0],
-                                    PlyType.UInt8 => lengthData[0],
-                                    PlyType.Int16 => MemoryMarshal.Cast<byte, short>(lengthData)[0],
-                                    PlyType.UInt16 => MemoryMarshal.Cast<byte, ushort>(lengthData)[0],
-                                    PlyType.Int32 => MemoryMarshal.Cast<byte, int>(lengthData)[0],
-                                    PlyType.UInt32 => (int)MemoryMarshal.Cast<byte, uint>(lengthData)[0],
-                                    _ => throw new ArgumentOutOfRangeException($"ply unknown list index type: {k.ListIndexType}")
-                                };
+                                throw new PlyReadException($"at {startPos} bad file");
                             }
-                            for (int l = 0; l < length; l++)
+                            if (needSwap)
                             {
-                                int elementType = TypeToByteCount(k.ListElementType);
-                                if (_stream.Read(buffer[..elementType]) != elementType)
-                                {
-                                    throw new ArgumentOutOfRangeException($"ply data error, expect:{elementType}");
-                                }
-                                data.AddRange(buffer[..elementType]);
+                                bytes.Reverse();
                             }
+                            length = p.ListIndexType switch
+                            {
+                                PlyType.Int8 => bytes[0],
+                                PlyType.UInt8 => bytes[0],
+                                PlyType.Int16 => Unsafe.ReadUnaligned<short>(ref bytes[0]),
+                                PlyType.UInt16 => Unsafe.ReadUnaligned<ushort>(ref bytes[0]),
+                                PlyType.Int32 => Unsafe.ReadUnaligned<int>(ref bytes[0]),
+                                PlyType.UInt32 => Unsafe.ReadUnaligned<uint>(ref bytes[0]),
+                                _ => throw new PlyReadException("bad list index type")
+                            };
                         }
-                        else
+                        int elemSize = TypeToByteCount(p.ListElementType);
+                        for (long j = 0; j < length; j++)
                         {
-                            int byteCount = TypeToByteCount(k.DataType);
-                            int readCount = _stream.Read(buffer[..byteCount]);
-                            if (byteCount != readCount)
+                            Span<byte> bytes = buffer[..elemSize];
+                            long startPos = _stream.Position;
+                            int readSize = _stream.Read(bytes);
+                            if (elemSize != readSize)
                             {
-                                throw new ArgumentOutOfRangeException($"ply data error, expect:{byteCount}, actully:{readCount}");
+                                throw new PlyReadException($"at {startPos} bad file");
                             }
-                            data.AddRange(buffer[..byteCount]);
+                            if (needSwap)
+                            {
+                                bytes.Reverse();
+                            }
+                            data.AddRange(bytes);
                         }
                     }
+                    else if (p.DataType == PlyType.Unknown)
+                    {
+                        throw new PlyReadException("data type cannot be unknown");
+                    }
+                    else
+                    {
+                        long startPos = _stream.Position;
+                        int elemSize = TypeToByteCount(p.DataType);
+                        Span<byte> bytes = buffer[..elemSize];
+                        int readSize = _stream.Read(bytes);
+                        if (elemSize != readSize)
+                        {
+                            throw new PlyReadException($"at {startPos} bad file");
+                        }
+                        if (needSwap)
+                        {
+                            bytes.Reverse();
+                        }
+                        data.AddRange(bytes);
+                    }
                 }
-                i.Data = [.. data];
             }
-            else
-            {
-                long byteCount = (long)stride * i.Length;
-                if (byteCount >= int.MaxValue)
-                {
-                    throw new ArgumentOutOfRangeException($"ply data too large: {byteCount}");
-                }
-                int allLength = (int)byteCount;
-                byte[] data = new byte[allLength];
-                int readLength = _stream.Read(data);
-                if (allLength != readLength)
-                {
-                    throw new ArgumentOutOfRangeException($"ply data error, expect:{allLength}, actully:{readLength}");
-                }
-                i.Data = data;
-            }
+            e.Data = data.ToArray();
         }
-        Console.WriteLine($"now pos: {_stream.Position}, len: {_stream.Length}");
     }
 
-    private static PlyType StringToType(string str)
+    private static PlyType StringToType(ReadOnlySpan<char> str)
     {
         return str switch
         {
@@ -328,12 +409,10 @@ public class PlyReader : IDisposable
             {
                 try
                 {
-                    _headReader.Dispose();
                     _stream.Dispose();
                 }
                 finally
                 {
-                    _headReader = null!;
                     _stream = null!;
                 }
             }
