@@ -51,6 +51,7 @@ public class PlyProperty
     public string UserDataType { get; internal set; } = null!;
     public PlyType ListIndexType { get; internal set; }
     public PlyType ListElementType { get; internal set; }
+    public int ListLengthHint { get; set; } = 0;
 }
 
 public class PlyHeader
@@ -67,6 +68,11 @@ public class PlyReadException : Exception
     public PlyReadException(string? message) : base(message) { }
 }
 
+/// <summary>
+/// 假设ply的list, 同一element呢的所有是list的property长度完全相等
+/// 这条假设不会有任何检查
+/// List花在扩容上的时间很多
+/// </summary>
 public class PlyReader : IDisposable
 {
     private Stream _stream;
@@ -268,6 +274,7 @@ public class PlyReader : IDisposable
         switch (_header.Format)
         {
             case PlyFormat.Ascii:
+                ReadAscii();
                 break;
             case PlyFormat.BinaryLittleEndian:
                 ReadBinary(PlyFormat.BinaryLittleEndian);
@@ -278,25 +285,39 @@ public class PlyReader : IDisposable
         }
     }
 
+    private void ReadAscii()
+    {
+
+    }
+
     private void ReadBinary(PlyFormat format)
     {
-        List<byte> data = new(1024);
         Span<byte> buffer = stackalloc byte[8];
         bool needSwap = BitConverter.IsLittleEndian != (format == PlyFormat.BinaryLittleEndian);
         foreach (PlyElement e in _header!.Elements)
         {
-            data.Clear();
-            for (int i = 0; i < e.Length; i++)
+            bool hasList = false;
+            foreach (PlyProperty p in e.Properties)
             {
+                if (p.DataType == PlyType.List)
+                {
+                    hasList = true;
+                    break;
+                }
+            }
+            if (hasList)
+            {
+                long stride = 0;
                 foreach (PlyProperty p in e.Properties)
                 {
                     if (p.DataType == PlyType.List)
                     {
-                        int idxSize = TypeToByteCount(p.ListIndexType);
                         long length;
+                        if (p.ListLengthHint == 0)
                         {
-                            Span<byte> bytes = buffer[..idxSize];
                             long startPos = _stream.Position;
+                            int idxSize = TypeToByteCount(p.ListIndexType);
+                            Span<byte> bytes = buffer[..idxSize];
                             int readSize = _stream.Read(bytes);
                             if (idxSize != readSize)
                             {
@@ -316,12 +337,67 @@ public class PlyReader : IDisposable
                                 PlyType.UInt32 => Unsafe.ReadUnaligned<uint>(ref bytes[0]),
                                 _ => throw new PlyReadException("bad list index type")
                             };
+                            _stream.Position = startPos;
+                            p.ListLengthHint = (int)length;
+                        }
+                        else
+                        {
+                            length = p.ListLengthHint;
                         }
                         int elemSize = TypeToByteCount(p.ListElementType);
-                        for (long j = 0; j < length; j++)
+                        long allSize = length * elemSize;
+                        stride += allSize;
+                    }
+                    else if (p.DataType == PlyType.Unknown)
+                    {
+                        throw new PlyReadException("data type cannot be unknown");
+                    }
+                    else
+                    {
+                        stride += TypeToByteCount(p.DataType);
+                    }
+                }
+                long size = e.Length * stride;
+                if (size > int.MaxValue)
+                {
+                    throw new PlyReadException("file too large");
+                }
+                int intSize = (int)size;
+                byte[] data = new byte[intSize];
+                int ptr = 0;
+                for (int i = 0; i < e.Length; i++)
+                {
+                    foreach (PlyProperty p in e.Properties)
+                    {
+                        if (p.DataType == PlyType.List)
                         {
-                            Span<byte> bytes = buffer[..elemSize];
+                            int length = p.ListLengthHint;
+                            int elemSize = TypeToByteCount(p.ListElementType);
+                            int listByte = elemSize * length;
+                            int idxSize = TypeToByteCount(p.ListIndexType);
+                            _stream.Position += idxSize;
+                            Span<byte> bytes = data.AsSpan(ptr, listByte);
                             long startPos = _stream.Position;
+                            int readSize = _stream.Read(bytes);
+                            if (listByte != readSize)
+                            {
+                                throw new PlyReadException($"at {startPos} bad file");
+                            }
+                            if (needSwap)
+                            {
+                                for (int j = 0; j < listByte; j += elemSize)
+                                {
+                                    Span<byte> ele = bytes[j..(j + elemSize)];
+                                    ele.Reverse();
+                                }
+                            }
+                            ptr += listByte;
+                        }
+                        else
+                        {
+                            long startPos = _stream.Position;
+                            int elemSize = TypeToByteCount(p.DataType);
+                            Span<byte> bytes = data.AsSpan(ptr, elemSize);
                             int readSize = _stream.Read(bytes);
                             if (elemSize != readSize)
                             {
@@ -331,32 +407,38 @@ public class PlyReader : IDisposable
                             {
                                 bytes.Reverse();
                             }
-                            data.AddRange(bytes);
+                            ptr += elemSize;
                         }
                     }
-                    else if (p.DataType == PlyType.Unknown)
+                }
+                e.Data = data;
+            }
+            else
+            {
+                int stride = 0;
+                foreach (PlyProperty p in e.Properties)
+                {
+                    if (p.DataType == PlyType.Unknown)
                     {
                         throw new PlyReadException("data type cannot be unknown");
                     }
-                    else
-                    {
-                        long startPos = _stream.Position;
-                        int elemSize = TypeToByteCount(p.DataType);
-                        Span<byte> bytes = buffer[..elemSize];
-                        int readSize = _stream.Read(bytes);
-                        if (elemSize != readSize)
-                        {
-                            throw new PlyReadException($"at {startPos} bad file");
-                        }
-                        if (needSwap)
-                        {
-                            bytes.Reverse();
-                        }
-                        data.AddRange(bytes);
-                    }
+                    stride += TypeToByteCount(p.DataType);
                 }
+                long size = (long)e.Length * stride;
+                if (size > int.MaxValue)
+                {
+                    throw new PlyReadException("file too large");
+                }
+                int intSize = (int)size;
+                byte[] data = new byte[intSize];
+                long startPos = _stream.Position;
+                int readSize = _stream.Read(data);
+                if (intSize != readSize)
+                {
+                    throw new PlyReadException($"at {startPos} bad file");
+                }
+                e.Data = data;
             }
-            e.Data = data.ToArray();
         }
     }
 
