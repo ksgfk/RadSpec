@@ -349,6 +349,10 @@ public class PlyReader : IDisposable
                         for (int j = 0; j < length; j++)
                         {
                             ReadOnlySpan<char> listData = ReadNext(buffer);
+                            if (listData.Length == 0)
+                            {
+                                throw new PlyReadException();
+                            }
                             ParseData(listData, p.ListElementType, byteData);
                         }
                     }
