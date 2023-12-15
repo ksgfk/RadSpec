@@ -4,22 +4,28 @@ namespace RadSpec;
 
 public class RgbColorSpace
 {
-    private readonly Vector2 _r, _g, _b, _w;
     private readonly Matrix3x3 _toRgb, _toXyz;
 
     public Matrix3x3 ToRgbMatrix => _toRgb;
     public Matrix3x3 ToXyzMatrix => _toXyz;
 
+    public static RgbColorSpace Srgb { get; } = new(
+        new(0.64f, 0.33f),
+        new(0.3f, 0.6f),
+        new(0.15f, 0.06f),
+        Spectra.CieIllumD65);
+    public static RgbColorSpace DciP3 { get; } = new(
+        new(0.68f, 0.32f),
+        new(0.265f, 0.69f),
+        new(0.15f, 0.06f),
+        Spectra.CieIllumD65);
+
     public RgbColorSpace(Vector2 r, Vector2 g, Vector2 b, ISpectrum illuminant)
     {
-        _r = r;
-        _g = g;
-        _b = b;
         Xyz w = illuminant.ToXyz();
-        _w = w.ChromaticityCoord();
-        Xyz r_ = Xyz.FromChromaticityCoord(_r);
-        Xyz g_ = Xyz.FromChromaticityCoord(_g);
-        Xyz b_ = Xyz.FromChromaticityCoord(_b);
+        Xyz r_ = Xyz.FromChromaticityCoord(r);
+        Xyz g_ = Xyz.FromChromaticityCoord(g);
+        Xyz b_ = Xyz.FromChromaticityCoord(b);
         Matrix3x3 rgb = new(
             r_.X, g_.X, b_.X,
             r_.Y, g_.Y, b_.Y,

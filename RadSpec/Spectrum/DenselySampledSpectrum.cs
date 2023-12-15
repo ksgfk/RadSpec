@@ -20,6 +20,17 @@ public class DenselySampledSpectrum : ISpectrum
         }
     }
 
+    public DenselySampledSpectrum(double[] values, int lambdaMin = Spectra.LambdaMin, int lambdaMax = Spectra.LambdaMax)
+    {
+        if (values.Length != lambdaMax - lambdaMin + 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(values));
+        }
+        _values = values;
+        _lambdaMin = lambdaMin;
+        _lambdaMax = lambdaMax;
+    }
+
     public double Eval(double lambda)
     {
         double t = double.Round(lambda);
