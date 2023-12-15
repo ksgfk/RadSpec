@@ -1,5 +1,4 @@
-using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
+using RadSpec.Spectrum;
 
 namespace RadSpec;
 
@@ -36,7 +35,7 @@ public static class Spectra
     public const int LambdaMax = 830;
     public const int SampleCount = 471;
 
-    public static readonly ImmutableArray<int> Cie1931XyzLambdas = [
+    private static readonly double[] Cie1931XyzLambdas = [
         360, 361, 362, 363, 364,
         365, 366, 367, 368, 369,
         370, 371, 372, 373, 374,
@@ -140,7 +139,7 @@ public static class Spectra
     /// 预积分Y分量
     /// </summary>
     public static readonly double Cie1931IntegralY;
-    public static readonly ImmutableArray<double> Cie1931X = [
+    private static readonly double[] Cie1931XData = [
         0.0001299, 0.000145847, 0.0001638021, 0.0001840037, 0.0002066902,
         0.0002321, 0.000260728, 0.000293075, 0.000329388, 0.000369914,
         0.0004149, 0.0004641587, 0.000518986, 0.000581854, 0.0006552347,
@@ -236,7 +235,7 @@ public static class Spectra
         0.000002522525, 0.000002351726, 0.000002192415, 0.000002043902, 0.000001905497,
         0.000001776509, 0.000001656215, 0.000001544022, 0.00000143944, 0.000001341977,
         0.000001251141];
-    public static readonly ImmutableArray<double> Cie1931Y = [
+    private static readonly double[] Cie1931YData = [
         0.000003917, 0.000004393581, 0.000004929604, 0.000005532136, 0.000006208245,
         0.000006965, 0.000007813219, 0.000008767336, 0.000009839844, 0.00001104323,
         0.00001239, 0.00001388641, 0.00001555728, 0.00001744296, 0.00001958375,
@@ -332,7 +331,7 @@ public static class Spectra
         0.00000091093, 0.0000008492513, 0.0000007917212, 0.0000007380904, 0.0000006881098,
         0.00000064153, 0.0000005980895, 0.0000005575746, 0.000000519808, 0.0000004846123,
         0.00000045181];
-    public static readonly ImmutableArray<double> Cie1931Z = [
+    private static readonly double[] Cie1931ZData = [
         0.0006061, 0.0006808792, 0.0007651456, 0.0008600124, 0.0009665928,
         0.001086, 0.001220586, 0.001372729, 0.001543579, 0.001734286,
         0.001946, 0.002177777, 0.002435809, 0.002731953, 0.003078064,
@@ -428,9 +427,12 @@ public static class Spectra
         0, 0, 0, 0, 0,
         0, 0, 0, 0, 0,
         0];
+    public static readonly DenselySampledSpectrum Cie1931X;
+    public static readonly DenselySampledSpectrum Cie1931Y;
+    public static readonly DenselySampledSpectrum Cie1931Z;
 
     // https://cie.co.at/datatable/cie-standard-illuminant-d65
-    public static readonly ImmutableArray<SpectraData> CieIllumD65 = [
+    private static readonly SpectraData[] CieIllumD65Data = [
         new(300, 0.0341), new(301, 0.36014), new(302, 0.68618), new(303, 1.01222), new(304, 1.33826), new(305, 1.6643), new(306, 1.99034), new(307, 2.31638),
         new(308, 2.64242), new(309, 2.96846), new(310, 3.2945), new(311, 4.98865), new(312, 6.6828), new(313, 8.37695), new(314, 10.0711), new(315, 11.7652),
         new(316, 13.4594), new(317, 15.1535), new(318, 16.8477), new(319, 18.5418), new(320, 20.236), new(321, 21.9177), new(322, 23.5995), new(323, 25.2812),
@@ -497,18 +499,26 @@ public static class Spectra
         new(804, 56.4547), new(805, 55.7054), new(806, 54.9562), new(807, 54.2069), new(808, 53.4576), new(809, 52.7083), new(810, 51.959), new(811, 52.5072),
         new(812, 53.0553), new(813, 53.6035), new(814, 54.1516), new(815, 54.6998), new(816, 55.248), new(817, 55.7961), new(818, 56.3443), new(819, 56.8924),
         new(820, 57.4406), new(821, 57.7278), new(822, 58.015), new(823, 58.3022), new(824, 58.5894), new(825, 58.8765), new(826, 59.1637), new(827, 59.4509),
-        new(828, 59.7381), new(829, 60.0253), new(830, 60.3125),
-    ];
+        new(828, 59.7381), new(829, 60.0253), new(830, 60.3125)];
+    public static readonly PiecewiseLinearSpectrum CieIllumD65;
 
     static Spectra()
     {
         {
             double resultY = 0;
-            for (int i = 1; i < Cie1931Y.Length; i++)
+            for (int i = 1; i < Cie1931YData.Length; i++)
             {
-                resultY += (Cie1931Y[i - 1] + Cie1931Y[i]) / 2.0;
+                resultY += (Cie1931YData[i - 1] + Cie1931YData[i]) / 2.0;
             }
             Cie1931IntegralY = resultY;
+        }
+        {
+            Cie1931X = new DenselySampledSpectrum(new PiecewiseLinearSpectrum(Cie1931XData, Cie1931XyzLambdas, false), LambdaMin, LambdaMax);
+            Cie1931Y = new DenselySampledSpectrum(new PiecewiseLinearSpectrum(Cie1931YData, Cie1931XyzLambdas, false), LambdaMin, LambdaMax);
+            Cie1931Z = new DenselySampledSpectrum(new PiecewiseLinearSpectrum(Cie1931ZData, Cie1931XyzLambdas, false), LambdaMin, LambdaMax);
+        }
+        {
+            CieIllumD65 = new PiecewiseLinearSpectrum(CieIllumD65Data, true);
         }
     }
 }
