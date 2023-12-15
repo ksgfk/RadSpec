@@ -9,7 +9,7 @@ public class DenselySampledSpectrum : ISpectrum
     public int LambdaMin => _lambdaMin;
     public int LambdaMax => _lambdaMax;
 
-    public DenselySampledSpectrum(ISpectrum spec, int lambdaMin, int lambdaMax)
+    public DenselySampledSpectrum(ISpectrum spec, int lambdaMin = Spectra.LambdaMin, int lambdaMax = Spectra.LambdaMax)
     {
         _lambdaMin = lambdaMin;
         _lambdaMax = lambdaMax;

@@ -3,12 +3,13 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.PixelFormats;
 
-// float[] t = [1.141f, 2.315f, 4.451f, 5.121f, 6.134f];
-
-// int i = Array.BinarySearch(t, 2);
-// int j = ~i;
-// Console.WriteLine(i);
-// Console.WriteLine(j);
-
-var t = Spectra.CieIllumD65.ToXYZ();
+var t = Spectra.CieIllumD65.ToXyz();
 Console.WriteLine(t);
+
+RgbColorSpace srgb = new(
+    new(0.64f, 0.33f),
+    new(0.3f, 0.6f),
+    new(0.15f, 0.06f),
+    Spectra.CieIllumD65);
+Console.WriteLine(srgb.ToRgbMatrix);
+Console.WriteLine(srgb.ToXyzMatrix);

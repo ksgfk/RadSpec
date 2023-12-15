@@ -19,7 +19,7 @@ public static class SpectrumUtility
         return integral;
     }
 
-    public static Vector3 ToXYZ(this ISpectrum s)
+    public static Xyz ToXyz(this ISpectrum s)
     {
         double x = InnerProduct(Spectra.Cie1931X, s);
         double y = InnerProduct(Spectra.Cie1931Y, s);
@@ -27,6 +27,6 @@ public static class SpectrumUtility
         x /= Spectra.Cie1931IntegralY;
         y /= Spectra.Cie1931IntegralY;
         z /= Spectra.Cie1931IntegralY;
-        return new Vector3((float)x, (float)y, (float)z);
+        return new Xyz((float)x, (float)y, (float)z);
     }
 }
