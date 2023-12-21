@@ -21,7 +21,7 @@ public readonly struct Xyz : IEquatable<Xyz>
     }
 
     /// <summary>
-    /// chromaticity coordinate
+    /// chromaticity coordinate, 描述相对于白色的相对色彩
     /// </summary>
     public Vector2 ChromaticityCoord()
     {

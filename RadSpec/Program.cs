@@ -23,9 +23,9 @@ img.ProcessPixelRows((a) =>
         Console.WriteLine($"i:{i} xyz:{xyz} rgb:{rgb}");
         foreach (ref var j in a.GetRowSpan(i))
         {
-            j.R = (byte)(float.Clamp(ColorUtility.ToSRGB(rgb.X), 0, 1) * byte.MaxValue);
-            j.G = (byte)(float.Clamp(ColorUtility.ToSRGB(rgb.Y), 0, 1) * byte.MaxValue);
-            j.B = (byte)(float.Clamp(ColorUtility.ToSRGB(rgb.Z), 0, 1) * byte.MaxValue);
+            j.R = (byte)(float.Clamp(ColorUtility.ToSrgb(rgb.X), 0, 1) * byte.MaxValue);
+            j.G = (byte)(float.Clamp(ColorUtility.ToSrgb(rgb.Y), 0, 1) * byte.MaxValue);
+            j.B = (byte)(float.Clamp(ColorUtility.ToSrgb(rgb.Z), 0, 1) * byte.MaxValue);
             j.A = byte.MaxValue;
         }
     }

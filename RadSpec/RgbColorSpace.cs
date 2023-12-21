@@ -2,6 +2,14 @@ using System.Numerics;
 
 namespace RadSpec;
 
+/// <summary>
+/// 定义色彩空间不需要完整的光谱响应曲线, 可以使用色度坐标(chromaticity coordinates)
+/// 三个色度坐标在色度图(chromaticity diagram)上, 组成一个三角形, 分别代表三原色
+/// 
+/// 除了三原色, 还需要一个白色点, 代表RGB三个值都拉满的情况, CIE标准照明D65是常用的白色光源值
+/// 
+/// 从XYZ转换RGB的矩阵可以预计算, 这个矩阵通过考虑三原色和白点之间的关系来找到
+/// </summary>
 public class RgbColorSpace
 {
     private readonly Matrix3x3 _toRgb, _toXyz;

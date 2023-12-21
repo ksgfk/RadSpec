@@ -2,7 +2,7 @@ namespace RadSpec;
 
 public static class ColorUtility
 {
-    public static float ToSRGB(float value)
+    public static float ToSrgb(float value)
     {
         return value <= 0.0031308f ? value * 12.92f : (1.0f + 0.055f) * MathF.Pow(value, 1.0f / 2.4f) - 0.055f;
     }
