@@ -17,6 +17,9 @@ public class RgbColorSpace
     public Matrix3x3 ToRgbMatrix => _toRgb;
     public Matrix3x3 ToXyzMatrix => _toXyz;
 
+    /// <summary>
+    /// ITU-R Rec. BT.709 linear RGB
+    /// </summary>
     public static RgbColorSpace Srgb { get; } = new(
         new(0.64f, 0.33f),
         new(0.3f, 0.6f),
