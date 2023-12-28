@@ -1,6 +1,6 @@
 namespace RadSpec;
 
-public static class VectorExtension
+public static partial class VectorExtension
 {
     public static float Sum(this Vector4f float4)
     {
