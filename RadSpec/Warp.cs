@@ -40,7 +40,7 @@ public static class Warp
 
     public static float UniformToVisibleWavelengthPdf(float lambda)
     {
-        if (lambda < 360 || lambda > 830)
+        if (lambda < Spectra.LambdaMin || lambda > Spectra.LambdaMax)
         {
             return 0;
         }

@@ -1,8 +1,6 @@
-using System.Numerics;
-
 namespace RadSpec;
 
-public struct Matrix3x3
+public struct Matrix3x3f
 {
     public float M11;
     public float M12;
@@ -14,7 +12,7 @@ public struct Matrix3x3
     public float M32;
     public float M33;
 
-    public Matrix3x3(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33)
+    public Matrix3x3f(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33)
     {
         M11 = m11;
         M12 = m12;
@@ -27,7 +25,7 @@ public struct Matrix3x3
         M33 = m33;
     }
 
-    public static Matrix3x3 FromDiagonal(float x, float y, float z)
+    public static Matrix3x3f FromDiagonal(float x, float y, float z)
     {
         return new(
             x, 0, 0,
@@ -35,7 +33,7 @@ public struct Matrix3x3
             0, 0, z);
     }
 
-    public static Matrix3x3 FromDiagonal(Vector3 vec)
+    public static Matrix3x3f FromDiagonal(Vector3f vec)
     {
         return new(
             vec.X, 0, 0,
@@ -43,15 +41,15 @@ public struct Matrix3x3
             0, 0, vec.Z);
     }
 
-    public static Matrix3x3 Transpose(Matrix3x3 matrix)
+    public static Matrix3x3f Transpose(Matrix3x3f matrix)
     {
-        return new Matrix3x3(
+        return new Matrix3x3f(
             matrix.M11, matrix.M21, matrix.M31,
             matrix.M12, matrix.M22, matrix.M32,
             matrix.M13, matrix.M23, matrix.M33);
     }
 
-    public static bool Invert(Matrix3x3 matrix, out Matrix3x3 result)
+    public static bool Invert(Matrix3x3f matrix, out Matrix3x3f result)
     {
         // 逆矩阵 = 伴随矩阵 / 矩阵的行列式
         float a = matrix.M11, b = matrix.M12, c = matrix.M13;
@@ -74,30 +72,32 @@ public struct Matrix3x3
 
         if (MathF.Abs(det) < float.Epsilon)
         {
-            result = new Matrix3x3(float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN);
+            result = new Matrix3x3f(float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN);
             return false;
         }
 
         float invDet = 1 / det;
-        result = new Matrix3x3(
+        result = new Matrix3x3f(
             c11 * invDet, c21 * invDet, c31 * invDet,
             c12 * invDet, c22 * invDet, c32 * invDet,
             c13 * invDet, c23 * invDet, c33 * invDet);
         return true;
     }
 
-    public static Vector3 Mul(Matrix3x3 matrix, Vector3 vec)
+    public static Vector3f Mul(Matrix3x3f matrix, Vector3f vec)
     {
-        Vector3 result = Vector3.Zero;
-        result.X = matrix.M11 * vec.X + matrix.M12 * vec.Y + matrix.M13 * vec.Z;
-        result.Y = matrix.M21 * vec.X + matrix.M22 * vec.Y + matrix.M23 * vec.Z;
-        result.Z = matrix.M31 * vec.X + matrix.M32 * vec.Y + matrix.M33 * vec.Z;
+        Vector3f result = new()
+        {
+            X = matrix.M11 * vec.X + matrix.M12 * vec.Y + matrix.M13 * vec.Z,
+            Y = matrix.M21 * vec.X + matrix.M22 * vec.Y + matrix.M23 * vec.Z,
+            Z = matrix.M31 * vec.X + matrix.M32 * vec.Y + matrix.M33 * vec.Z
+        };
         return result;
     }
 
-    public static Matrix3x3 Mul(Matrix3x3 l, Matrix3x3 r)
+    public static Matrix3x3f Mul(Matrix3x3f l, Matrix3x3f r)
     {
-        Matrix3x3 result = new()
+        Matrix3x3f result = new()
         {
             M11 = l.M11 * r.M11 + l.M12 * r.M21 + l.M13 * r.M31,
             M12 = l.M11 * r.M12 + l.M12 * r.M22 + l.M13 * r.M32,

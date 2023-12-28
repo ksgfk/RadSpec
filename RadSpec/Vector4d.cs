@@ -22,13 +22,37 @@ public struct Vector4d
         W = value;
     }
 
-    public Vector4d(Vector4 float4)
+    public Vector4d(Vector4 v)
     {
-        X = float4.X;
-        Y = float4.Y;
-        Z = float4.Z;
-        W = float4.W;
+        X = v.X;
+        Y = v.Y;
+        Z = v.Z;
+        W = v.W;
     }
 
-    public readonly Vector4 ToFloat4() => new((float)X, (float)Y, (float)Z, (float)W);
+    public readonly Vector4f ToFloat4() => new((float)X, (float)Y, (float)Z, (float)W);
+
+    public static Vector4d operator +(Vector4d lhs, Vector4d rhs) => new(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z, lhs.W + rhs.W);
+    public static Vector4d operator -(Vector4d lhs, Vector4d rhs) => new(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z, lhs.W - rhs.W);
+    public static Vector4d operator *(Vector4d lhs, Vector4d rhs) => new(lhs.X * rhs.X, lhs.Y * rhs.Y, lhs.Z * rhs.Z, lhs.W * rhs.W);
+    public static Vector4d operator /(Vector4d lhs, Vector4d rhs) => new(lhs.X / rhs.X, lhs.Y / rhs.Y, lhs.Z / rhs.Z, lhs.W / rhs.W);
+
+    public static Vector4d operator +(Vector4d lhs, double rhs) => new(lhs.X + rhs, lhs.Y + rhs, lhs.Z + rhs, lhs.W + rhs);
+    public static Vector4d operator +(double lhs, Vector4d rhs) => new(lhs + rhs.X, lhs + rhs.Y, lhs + rhs.Z, lhs + rhs.W);
+
+    public static Vector4d operator -(Vector4d lhs, double rhs) => new(lhs.X - rhs, lhs.Y - rhs, lhs.Z - rhs, lhs.W - rhs);
+    public static Vector4d operator -(double lhs, Vector4d rhs) => new(lhs - rhs.X, lhs - rhs.Y, lhs - rhs.Z, lhs - rhs.W);
+
+    public static Vector4d operator *(Vector4d lhs, double rhs) => new(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs, lhs.W * rhs);
+    public static Vector4d operator *(double lhs, Vector4d rhs) => new(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z, lhs * rhs.W);
+
+    public static Vector4d operator /(Vector4d lhs, double rhs) => new(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs, lhs.W / rhs);
+    public static Vector4d operator /(double lhs, Vector4d rhs) => new(lhs / rhs.X, lhs / rhs.Y, lhs / rhs.Z, lhs / rhs.W);
+
+    public static bool operator ==(Vector4d lhs, Vector4d rhs) => lhs.X == rhs.X && lhs.Y == rhs.Y && lhs.Z == rhs.Z && lhs.W == rhs.W;
+    public static bool operator !=(Vector4d lhs, Vector4d rhs) => lhs.X != rhs.X || lhs.Y != rhs.Y || lhs.Z != rhs.Z || lhs.W != rhs.W;
+
+    public override readonly bool Equals(object? obj) => (obj is Vector4d v) && this == v;
+    public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
+    public override readonly string ToString() => $"<{X}, {Y}, {Z}, {W}>";
 }

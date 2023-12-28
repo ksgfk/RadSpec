@@ -1,34 +1,32 @@
-using System.Numerics;
-
 namespace RadSpec;
 
 public readonly struct Xyz : IEquatable<Xyz>
 {
-    public readonly Vector3 Value;
+    private readonly Vector3f _value;
 
-    public float X => Value.X;
-    public float Y => Value.Y;
-    public float Z => Value.Z;
+    public float X => _value.X;
+    public float Y => _value.Y;
+    public float Z => _value.Z;
 
-    public Xyz(Vector3 value)
+    public Xyz(Vector3f value)
     {
-        Value = value;
+        _value = value;
     }
 
     public Xyz(float x, float y, float z)
     {
-        Value = new Vector3(x, y, z);
+        _value = new Vector3f(x, y, z);
     }
 
     /// <summary>
     /// chromaticity coordinate, 描述相对于白色的相对色彩
     /// </summary>
-    public Vector2 ChromaticityCoord()
+    public Vector2f ChromaticityCoord()
     {
-        return new Vector2(X / (X + Y + Z), Y / (X + Y + Z));
+        return new Vector2f(X / (X + Y + Z), Y / (X + Y + Z));
     }
 
-    public static Xyz FromChromaticityCoord(Vector2 xy, float y = 1)
+    public static Xyz FromChromaticityCoord(Vector2f xy, float y = 1)
     {
         if (xy.Y == 0)
         {
@@ -37,14 +35,13 @@ public readonly struct Xyz : IEquatable<Xyz>
         return new Xyz(xy.X * y / xy.Y, y, (1 - xy.X - xy.Y) * y / xy.Y);
     }
 
-    public static implicit operator Vector3(Xyz xyz) => xyz.Value;
+    public static implicit operator Vector3f(Xyz xyz) => xyz._value;
+    public static implicit operator Xyz(Vector3f vec) => new(vec);
 
-    public static implicit operator Xyz(Vector3 vec) => new Xyz(vec);
-
-    public override string ToString() => $"<{X}, {Y}, {Z}>";
-    public bool Equals(Xyz other) => Value.Equals(other.Value);
+    public static bool operator ==(Xyz left, Xyz right) => left._value == right._value;
+    public static bool operator !=(Xyz left, Xyz right) => left._value != right._value;
+    public bool Equals(Xyz other) => _value.Equals(other._value);
     public override bool Equals(object? obj) => (obj is Xyz other) && Equals(other);
-    public override int GetHashCode() => Value.GetHashCode();
-    public static bool operator ==(Xyz left, Xyz right) => left.Value == right.Value;
-    public static bool operator !=(Xyz left, Xyz right) => left.Value != right.Value;
+    public override int GetHashCode() => _value.GetHashCode();
+    public override string ToString() => $"<{X}, {Y}, {Z}>";
 }

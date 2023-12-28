@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadSpec", "RadSpec\RadSpec.csproj", "{0923D148-67EB-4B10-9210-33BF9DE387C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadSpec.Benchmark", "RadSpec.Benchmark\RadSpec.Benchmark.csproj", "{D6A42384-DCCD-4A8F-A441-8BB83DD78600}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0923D148-67EB-4B10-9210-33BF9DE387C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0923D148-67EB-4B10-9210-33BF9DE387C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0923D148-67EB-4B10-9210-33BF9DE387C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A42384-DCCD-4A8F-A441-8BB83DD78600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A42384-DCCD-4A8F-A441-8BB83DD78600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A42384-DCCD-4A8F-A441-8BB83DD78600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A42384-DCCD-4A8F-A441-8BB83DD78600}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

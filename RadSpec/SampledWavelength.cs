@@ -1,13 +1,11 @@
-using System.Numerics;
-
 namespace RadSpec;
 
 public readonly struct SampledWavelength
 {
-    public readonly Vector4 Lambda;
-    public readonly Vector4 Pdf;
+    public readonly Vector4f Lambda;
+    public readonly Vector4f Pdf;
 
-    public SampledWavelength(Vector4 lambda, Vector4 pdf)
+    public SampledWavelength(Vector4f lambda, Vector4f pdf)
     {
         Lambda = lambda;
         Pdf = pdf;

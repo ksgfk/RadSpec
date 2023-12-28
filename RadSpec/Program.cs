@@ -1,4 +1,4 @@
-using System.Numerics;
+using System.Runtime.Intrinsics;
 using RadSpec;
 using RadSpec.Spectrum;
 using SixLabors.ImageSharp;
@@ -35,7 +35,7 @@ for (int i = 0; i < 50; i++)
 //         }
 //         DenselySampledSpectrum spec = new(values);
 //         Xyz xyz = spec.ToXyz();
-//         Vector3 rgb = RgbColorSpace.Srgb.ToRgb(xyz);
+//         Vector3f rgb = RgbColorSpace.Srgb.ToRgb(xyz);
 //         Console.WriteLine($"i:{i} xyz:{xyz} rgb:{rgb}");
 //         foreach (ref var j in a.GetRowSpan(i))
 //         {
