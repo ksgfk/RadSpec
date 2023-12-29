@@ -1,5 +1,3 @@
-using static RadSpec.MathExt;
-
 namespace RadSpec;
 
 /// <summary>
@@ -24,7 +22,7 @@ public static class Warp
          *
          * 主要难点就是不知道双曲函数的积分表...阿巴阿巴阿巴
          */
-        double integral = 1 / VisWaveA * (Math.Tanh(VisWaveA * (Spectra.LambdaMax - VisWaveB)) - Math.Tanh(VisWaveA * (Spectra.LambdaMin - VisWaveB)));
+        double integral = 1 / VisWaveA * (Tanh(VisWaveA * (Spectra.LambdaMax - VisWaveB)) - Tanh(VisWaveA * (Spectra.LambdaMin - VisWaveB)));
         InvVisWaveIntegral = 1 / integral;
     }
 
@@ -33,8 +31,8 @@ public static class Warp
         const double a = VisWaveA;
         const double b = VisWaveB;
         double c = InvVisWaveIntegral;
-        double d = c * (1 / VisWaveA * Math.Tanh(VisWaveA * (Spectra.LambdaMin - VisWaveB)));
-        double result = 1 / a * Math.Atanh(a / c * (xi + d)) + b;
+        double d = c * (1 / VisWaveA * Tanh(VisWaveA * (Spectra.LambdaMin - VisWaveB)));
+        double result = 1 / a * Atanh(a / c * (xi + d)) + b;
         return (float)result;
     }
 
@@ -44,7 +42,7 @@ public static class Warp
         {
             return 0;
         }
-        double result = InvVisWaveIntegral / Sqr(Math.Cosh(VisWaveA * (lambda - VisWaveB)));
+        double result = InvVisWaveIntegral / Sqr(Cosh(VisWaveA * (lambda - VisWaveB)));
         return (float)result;
     }
 }
