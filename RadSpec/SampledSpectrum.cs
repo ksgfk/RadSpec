@@ -26,17 +26,17 @@ public readonly struct SampledSpectrum
 
     public Xyz ToXyz(SampledWavelength wavelength)
     {
-        Vector4f cieX = Spectra.Cie1931X.Eval(wavelength).ToFloat4();
-        Vector4f cieY = Spectra.Cie1931Y.Eval(wavelength).ToFloat4();
-        Vector4f cieZ = Spectra.Cie1931Z.Eval(wavelength).ToFloat4();
+        Vector4f cieX = Spectra.Cie1931X.Eval(wavelength).AsFloat4();
+        Vector4f cieY = Spectra.Cie1931Y.Eval(wavelength).AsFloat4();
+        Vector4f cieZ = Spectra.Cie1931Z.Eval(wavelength).AsFloat4();
 
         Vector4f specX = cieX * _value / wavelength.Pdf;
         Vector4f specY = cieY * _value / wavelength.Pdf;
         Vector4f specZ = cieZ * _value / wavelength.Pdf;
 
-        float x = specX.Sum() / 4 / (float)Spectra.Cie1931IntegralY;
-        float y = specY.Sum() / 4 / (float)Spectra.Cie1931IntegralY;
-        float z = specZ.Sum() / 4 / (float)Spectra.Cie1931IntegralY;
+        float x = Sum(specX) / 4 / (float)Spectra.Cie1931IntegralY;
+        float y = Sum(specY) / 4 / (float)Spectra.Cie1931IntegralY;
+        float z = Sum(specZ) / 4 / (float)Spectra.Cie1931IntegralY;
 
         return new Xyz(x, y, z);
     }

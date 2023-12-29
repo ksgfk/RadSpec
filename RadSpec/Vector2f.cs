@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace RadSpec;
 
-public struct Vector2f : IVector<Vector2f, float>
+public struct Vector2f
 {
     public Vector2 Value;
 
@@ -11,7 +11,7 @@ public struct Vector2f : IVector<Vector2f, float>
 
     public float this[int i] { readonly get => Value[i]; set => Value[i] = value; }
 
-    public static int Count => 2;
+    public const int Count = 2;
     public static Vector2f Zero => new(0);
     public static Vector2f One => new(1);
 
@@ -67,4 +67,31 @@ public struct Vector2f : IVector<Vector2f, float>
     public static Vector2f Clamp(Vector2f v, Vector2f min, Vector2f max) => Vector2.Clamp(v.Value, min.Value, max.Value);
     public static Vector2f Max(Vector2f x, Vector2f y) => Vector2.Max(x.Value, y.Value);
     public static Vector2f Min(Vector2f x, Vector2f y) => Vector2.Min(x.Value, y.Value);
+
+    public static Vector2f Floor(Vector2f v) => new(float.Floor(v.X), float.Floor(v.Y));
+    public static Vector2f Ceiling(Vector2f v) => new(float.Ceiling(v.X), float.Ceiling(v.Y));
+    public static Vector2f Lerp(Vector2f x, Vector2f y, float t) => Vector2.Lerp(x, y, t);
+    public static Vector2f Normalize(Vector2f v) => Vector2.Normalize(v);
+    public static Vector2f Sqrt(Vector2f v) => Vector2.SquareRoot(v);
+    public static Vector2f Fma(Vector2f a, Vector2f b, Vector2f c) => new(float.FusedMultiplyAdd(a.X, b.X, c.X), float.FusedMultiplyAdd(a.Y, b.Y, c.Y));
+    public static Vector2f Fma(float a, Vector2f b, Vector2f c) => new(float.FusedMultiplyAdd(a, b.X, c.X), float.FusedMultiplyAdd(a, b.Y, c.Y));
+    public static Vector2f Fma(Vector2f a, float b, Vector2f c) => new(float.FusedMultiplyAdd(a.X, b, c.X), float.FusedMultiplyAdd(a.Y, b, c.Y));
+    public static Vector2f Fma(Vector2f a, Vector2f b, float c) => new(float.FusedMultiplyAdd(a.X, b.X, c), float.FusedMultiplyAdd(a.Y, b.Y, c));
+    public static Vector2f Fma(float a, float b, Vector2f c) => new(float.FusedMultiplyAdd(a, b, c.X), float.FusedMultiplyAdd(a, b, c.Y));
+    public static Vector2f Fma(float a, Vector2f b, float c) => new(float.FusedMultiplyAdd(a, b.X, c), float.FusedMultiplyAdd(a, b.Y, c));
+    public static Vector2f Fma(Vector2f a, float b, float c) => new(float.FusedMultiplyAdd(a.X, b, c), float.FusedMultiplyAdd(a.Y, b, c));
+    public static float Distance(Vector2f x, Vector2f y) => Vector2.Distance(x, y);
+    public static float DistanceSquared(Vector2f x, Vector2f y) => Vector2.DistanceSquared(x, y);
+    public static float Dot(Vector2f x, Vector2f y) => Vector2.Dot(x, y);
+    public static float AbsDot(Vector2f x, Vector2f y) => float.Abs(Vector2.Dot(x, y));
+    public static float Length(Vector2f v) => v.Value.Length();
+    public static float LengthSquared(Vector2f v) => v.Value.LengthSquared();
+    public static float Sum(Vector2f v) => v.X + v.Y;
+    public static float MinElement(Vector2f v) => float.Min(v.X, v.Y);
+    public static float MaxElement(Vector2f v) => float.Max(v.X, v.Y);
+    public static bool HasNan(Vector2f v) => float.IsNaN(v.X) || float.IsNaN(v.Y);
+    public static bool HasInf(Vector2f v) => float.IsInfinity(v.X) || float.IsInfinity(v.Y);
+
+    public readonly Vector2d AsDouble2() => new(X, Y);
+    public readonly Vector2i AsInt2() => new((int)X, (int)Y);
 }

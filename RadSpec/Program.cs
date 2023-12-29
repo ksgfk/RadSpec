@@ -9,6 +9,8 @@ for (int i = 0; i < 50; i++)
     var lambda = Warp.UniformToVisibleWavelength(i * 0.01f);
     var pdf = Warp.UniformToVisibleWavelengthPdf(lambda);
     Console.WriteLine($"sample lambda: {lambda}, pdf: {pdf}");
+
+    new List<int>().Sum();
 }
 
 // double r = 1 / 0.0072 * Math.Tanh(0.0072 * (830 - 538)) - 1 / 0.0072 * Math.Tanh(0.0072 * (360 - 538));

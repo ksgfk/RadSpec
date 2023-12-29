@@ -70,7 +70,7 @@ public struct Matrix3x3f
         // 矩阵的行列式
         float det = a * c11 + b * c12 + c * c13;
 
-        if (MathF.Abs(det) < float.Epsilon)
+        if (float.Abs(det) < float.Epsilon)
         {
             result = new Matrix3x3f(float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN);
             return false;
