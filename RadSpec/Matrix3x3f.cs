@@ -1,6 +1,6 @@
 namespace RadSpec;
 
-public struct Matrix3x3f
+public struct Matrix3x3f : IEquatable<Matrix3x3f>
 {
     public float M11;
     public float M12;
@@ -84,7 +84,7 @@ public struct Matrix3x3f
         return true;
     }
 
-    public static Vector3f Mul(Matrix3x3f matrix, Vector3f vec)
+    public static Vector3f Multiply(Matrix3x3f matrix, Vector3f vec)
     {
         Vector3f result = new()
         {
@@ -95,7 +95,18 @@ public struct Matrix3x3f
         return result;
     }
 
-    public static Matrix3x3f Mul(Matrix3x3f l, Matrix3x3f r)
+    public static Vector3f Multiply(Vector3f vec, Matrix3x3f matrix)
+    {
+        Vector3f result = new()
+        {
+            X = vec.X * matrix.M11 + vec.Y * matrix.M21 + vec.Z * matrix.M31,
+            Y = vec.X * matrix.M12 + vec.Y * matrix.M22 + vec.Z * matrix.M32,
+            Z = vec.X * matrix.M13 + vec.Y * matrix.M23 + vec.Z * matrix.M33,
+        };
+        return result;
+    }
+
+    public static Matrix3x3f Multiply(Matrix3x3f l, Matrix3x3f r)
     {
         Matrix3x3f result = new()
         {
@@ -114,8 +125,36 @@ public struct Matrix3x3f
         return result;
     }
 
+    public static Matrix3x3f operator *(Matrix3x3f a, Matrix3x3f b) => Multiply(a, b);
+    public static Vector3f operator *(Matrix3x3f a, Vector3f b) => Multiply(a, b);
+    public static Vector3f operator *(Vector3f a, Matrix3x3f b) => Multiply(a, b);
+
     public override readonly string ToString()
     {
         return $"{{ {{M11:{M11} M12:{M12} M13:{M13}}} {{M21:{M21} M22:{M22} M23:{M23}}} {{M31:{M31} M32:{M32} M33:{M33}}} }}";
     }
+    public readonly bool Equals(Matrix3x3f other)
+    {
+        return M11 == other.M11 && M12 == other.M12 && M13 == other.M13 &&
+            M21 == other.M21 && M22 == other.M22 && M23 == other.M23 &&
+            M31 == other.M31 && M32 == other.M32 && M33 == other.M33;
+    }
+    public override readonly bool Equals(object? obj) => (obj is Matrix3x3f mat) && Equals(mat);
+    public override readonly int GetHashCode()
+    {
+        HashCode hash = new();
+        hash.Add(M11);
+        hash.Add(M12);
+        hash.Add(M13);
+        hash.Add(M21);
+        hash.Add(M22);
+        hash.Add(M23);
+        hash.Add(M31);
+        hash.Add(M32);
+        hash.Add(M33);
+        return hash.ToHashCode();
+    }
+
+    public static bool operator ==(Matrix3x3f lhs, Matrix3x3f rhs) => lhs.Equals(rhs);
+    public static bool operator !=(Matrix3x3f lhs, Matrix3x3f rhs) => !lhs.Equals(rhs);
 }

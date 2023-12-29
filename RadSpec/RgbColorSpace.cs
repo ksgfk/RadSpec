@@ -43,16 +43,16 @@ public class RgbColorSpace
             r_.Z, g_.Z, b_.Z);
         Matrix3x3f invRgb;
         {
-            bool isSucc = Matrix3x3f.Invert(rgb, out invRgb);
+            bool isSucc = Invert(rgb, out invRgb);
             if (!isSucc)
             {
                 throw new InvalidOperationException();
             }
         }
-        Xyz c = Matrix3x3f.Mul(invRgb, w);
-        _toXyz = Matrix3x3f.Mul(rgb, Matrix3x3f.FromDiagonal(c));
+        Xyz c = Multiply(invRgb, w);
+        _toXyz = Multiply(rgb, FromDiagonal(c));
         {
-            bool isSucc = Matrix3x3f.Invert(_toXyz, out _toRgb);
+            bool isSucc = Invert(_toXyz, out _toRgb);
             if (!isSucc)
             {
                 throw new InvalidOperationException();
@@ -60,7 +60,7 @@ public class RgbColorSpace
         }
     }
 
-    public Vector3f ToRgb(Xyz xyz) => Matrix3x3f.Mul(_toRgb, xyz);
+    public Vector3f ToRgb(Xyz xyz) => Multiply(_toRgb, xyz);
 
-    public Xyz ToXyz(Vector3 rgb) => Matrix3x3f.Mul(_toXyz, rgb);
+    public Xyz ToXyz(Vector3 rgb) => Multiply(_toXyz, rgb);
 }

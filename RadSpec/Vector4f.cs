@@ -84,8 +84,8 @@ public struct Vector4f
     public static Vector4f operator ++(Vector4f v) => v.Value + new Vector4(1);
     public static Vector4f operator --(Vector4f v) => v.Value - new Vector4(1);
 
-    public override readonly bool Equals(object? obj) => Value.Equals(obj);
-    public readonly bool Equals(Vector4f other) => this == other;
+    public override readonly bool Equals(object? obj) => (obj is Vector4f v) && Value.Equals(v);
+    public readonly bool Equals(Vector4f other) => Value.Equals(other.Value);
     public override readonly int GetHashCode() => Value.GetHashCode();
     public override readonly string ToString() => Value.ToString();
 

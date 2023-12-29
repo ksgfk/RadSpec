@@ -7,6 +7,8 @@ global using static RadSpec.Vector4d;
 global using static RadSpec.Vector2i;
 global using static RadSpec.Vector3i;
 global using static RadSpec.Vector4i;
+global using static RadSpec.Matrix3x3f;
+global using static RadSpec.Matrix4x4f;
 global using static RadSpec.MathExt;
 global using static System.Math;
 global using static System.MathF;

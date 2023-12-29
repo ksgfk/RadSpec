@@ -68,8 +68,8 @@ public struct Vector3f
     public static Vector3f operator ++(Vector3f v) => v.Value + new Vector3(1);
     public static Vector3f operator --(Vector3f v) => v.Value - new Vector3(1);
 
-    public override readonly bool Equals(object? obj) => Value.Equals(obj);
-    public readonly bool Equals(Vector3f other) => this == other;
+    public override readonly bool Equals(object? obj) => (obj is Vector3f v) && Value.Equals(v);
+    public readonly bool Equals(Vector3f other) => Value.Equals(other.Value);
     public override readonly int GetHashCode() => Value.GetHashCode();
     public override readonly string ToString() => Value.ToString();
 

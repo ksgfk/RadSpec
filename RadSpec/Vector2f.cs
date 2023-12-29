@@ -58,8 +58,8 @@ public struct Vector2f
     public static bool operator ==(Vector2f lhs, Vector2f rhs) => lhs.Value == rhs.Value;
     public static bool operator !=(Vector2f lhs, Vector2f rhs) => lhs.Value != rhs.Value;
 
-    public override readonly bool Equals(object? obj) => Value.Equals(obj);
-    public readonly bool Equals(Vector2f other) => this == other;
+    public override readonly bool Equals(object? obj) => (obj is Vector2f v) && Value.Equals(v);
+    public readonly bool Equals(Vector2f other) => Value.Equals(other.Value);
     public override readonly int GetHashCode() => Value.GetHashCode();
     public override readonly string ToString() => Value.ToString();
 
