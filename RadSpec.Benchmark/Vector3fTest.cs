@@ -147,10 +147,7 @@ public class Vector3fAdd : Vector3fTest
     {
         for (int i = 0; i < Len; i++)
         {
-            *rx = *ax + *bx;
-            ax++;
-            bx++;
-            rx++;
+            rx[i] = ax[i] + bx[i];
         }
     }
 
@@ -169,19 +166,13 @@ public class Vector3fAdd : Vector3fTest
                 int remain = Len / 8 * 8;
                 for (int i = 0; i < Len; i += 8)
                 {
-                    var x1 = Vector256.LoadAligned(ax);
-                    var x2 = Vector256.LoadAligned(bx);
-                    (x1 + x2).StoreAligned(rx);
-                    ax += 8;
-                    bx += 8;
-                    rx += 8;
+                    var x1 = Vector256.LoadAligned(&ax[i]);
+                    var x2 = Vector256.LoadAligned(&bx[i]);
+                    (x1 + x2).StoreAligned(&rx[i]);
                 }
                 for (int i = remain; i < Len; i++)
                 {
-                    *rx = *ax + *bx;
-                    ax++;
-                    bx++;
-                    rx++;
+                    rx[i] = ax[i] + bx[i];
                 }
             }
             else
@@ -206,19 +197,13 @@ public class Vector3fAdd : Vector3fTest
                 int remain = Len / 4 * 4;
                 for (int i = 0; i < Len; i += 4)
                 {
-                    var x1 = Vector128.LoadAligned(ax);
-                    var x2 = Vector128.LoadAligned(bx);
-                    (x1 + x2).StoreAligned(rx);
-                    ax += 4;
-                    bx += 4;
-                    rx += 4;
+                    var x1 = Vector128.LoadAligned(&ax[i]);
+                    var x2 = Vector128.LoadAligned(&bx[i]);
+                    (x1 + x2).StoreAligned(&rx[i]);
                 }
                 for (int i = remain; i < Len; i++)
                 {
-                    *rx = *ax + *bx;
-                    ax++;
-                    bx++;
-                    rx++;
+                    rx[i] = ax[i] + bx[i];
                 }
             }
             else
@@ -235,6 +220,7 @@ public class Vector3fAdd : Vector3fTest
         Call(_soaA.Y, _soaB.Y, _soaC.Y);
         Call(_soaA.Z, _soaB.Z, _soaC.Z);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static void Call(float* ax, float* bx, float* rx)
         {
             if (Vector64.IsHardwareAccelerated)
@@ -242,19 +228,13 @@ public class Vector3fAdd : Vector3fTest
                 int remain = Len / 2 * 2;
                 for (int i = 0; i < Len; i += 2)
                 {
-                    var x1 = Vector64.LoadAligned(ax);
-                    var x2 = Vector64.LoadAligned(bx);
-                    (x1 + x2).StoreAligned(rx);
-                    ax += 2;
-                    bx += 2;
-                    rx += 2;
+                    var x1 = Vector64.LoadAligned(&ax[i]);
+                    var x2 = Vector64.LoadAligned(&bx[i]);
+                    (x1 + x2).StoreAligned(&rx[i]);
                 }
                 for (int i = remain; i < Len; i++)
                 {
-                    *rx = *ax + *bx;
-                    ax++;
-                    bx++;
-                    rx++;
+                    rx[i] = ax[i] + bx[i];
                 }
             }
             else
