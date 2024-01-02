@@ -97,13 +97,13 @@ public struct Vector4d
     public static Vector4d Fma(Vector4d a, double b, double c) => new(double.FusedMultiplyAdd(a.X, b, c), double.FusedMultiplyAdd(a.Y, b, c), double.FusedMultiplyAdd(a.Z, b, c), double.FusedMultiplyAdd(a.W, b, c));
     public static double Distance(Vector4d x, Vector4d y) => Length(x - y);
     public static double DistanceSquared(Vector4d x, Vector4d y) => LengthSquared(x - y);
-    public static double Dot(Vector4d x, Vector4d y) => double.FusedMultiplyAdd(x.W, y.W, double.FusedMultiplyAdd(x.Z, y.Z, double.FusedMultiplyAdd(x.Y, y.Y, x.X * y.X)));  // x.X * y.X + x.Y * y.Y + x.Z * y.Z + x.W * y.W
+    public static double Dot(Vector4d x, Vector4d y) => x.X * y.X + x.Y * y.Y + x.Z * y.Z + x.W * y.W;
     public static double AbsDot(Vector4d x, Vector4d y) => double.Abs(Dot(x, y));
     public static double Length(Vector4d v) => double.Sqrt(LengthSquared(v));
     public static double LengthSquared(Vector4d v) => Dot(v, v);
     public static double MinElement(Vector4d v) => double.Min(double.Min(double.Min(v.X, v.Y), v.Z), v.W);
     public static double MaxElement(Vector4d v) => double.Max(double.Max(double.Max(v.X, v.Y), v.Z), v.W);
-    public static bool HasNan(Vector4d v) => double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z) || double.IsNaN(v.W);
+    public static bool HasNaN(Vector4d v) => double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z) || double.IsNaN(v.W);
     public static bool HasInf(Vector4d v) => double.IsInfinity(v.X) || double.IsInfinity(v.Y) || double.IsInfinity(v.Z) || double.IsInfinity(v.W);
 
     public readonly Vector4f AsFloat4() => new((float)X, (float)Y, (float)Z, (float)W);

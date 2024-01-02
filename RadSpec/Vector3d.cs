@@ -91,19 +91,19 @@ public struct Vector3d
     public static Vector3d Fma(Vector3d a, double b, double c) => new(double.FusedMultiplyAdd(a.X, b, c), double.FusedMultiplyAdd(a.Y, b, c), double.FusedMultiplyAdd(a.Z, b, c));
     public static double Distance(Vector3d x, Vector3d y) => Length(x - y);
     public static double DistanceSquared(Vector3d x, Vector3d y) => LengthSquared(x - y);
-    public static double Dot(Vector3d x, Vector3d y) => double.FusedMultiplyAdd(x.Z, y.Z, double.FusedMultiplyAdd(x.Y, y.Y, x.X * y.X));  // x.X * y.X + x.Y * y.Y + x.Z * y.Z
+    public static double Dot(Vector3d x, Vector3d y) => x.X * y.X + x.Y * y.Y + x.Z * y.Z;
     public static double AbsDot(Vector3d x, Vector3d y) => double.Abs(Dot(x, y));
     public static double Length(Vector3d v) => double.Sqrt(LengthSquared(v));
     public static double LengthSquared(Vector3d v) => Dot(v, v);
     public static double MinElement(Vector3d v) => double.Min(double.Min(v.X, v.Y), v.Z);
     public static double MaxElement(Vector3d v) => double.Max(double.Max(v.X, v.Y), v.Z);
-    public static bool HasNan(Vector3d v) => double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z);
+    public static bool HasNaN(Vector3d v) => double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z);
     public static bool HasInf(Vector3d v) => double.IsInfinity(v.X) || double.IsInfinity(v.Y) || double.IsInfinity(v.Z);
 
     public static Vector3d Cross(Vector3d x, Vector3d y) => new(
-        double.FusedMultiplyAdd(x.Y, y.Z, -(x.Z * y.Y)),
-        double.FusedMultiplyAdd(x.Z, y.X, -(x.X * y.Z)),
-        double.FusedMultiplyAdd(x.X, y.Y, -(x.Y * y.X)));
+        x.Y * y.Z - x.Z * y.Y,
+        x.Z * y.X - x.X * y.Z,
+        x.X * y.Y - x.Y * y.X);
 
     public readonly Vector3f AsFloat3() => new((float)X, (float)Y, (float)Z);
     public readonly Vector3i AsInt3() => new((int)X, (int)Y, (int)Z);

@@ -85,13 +85,13 @@ public struct Vector2d
     public static Vector2d Fma(Vector2d a, double b, double c) => new(double.FusedMultiplyAdd(a.X, b, c), double.FusedMultiplyAdd(a.Y, b, c));
     public static double Distance(Vector2d x, Vector2d y) => Length(x - y);
     public static double DistanceSquared(Vector2d x, Vector2d y) => LengthSquared(x - y);
-    public static double Dot(Vector2d x, Vector2d y) => double.FusedMultiplyAdd(x.Y, y.Y, x.X * y.X);  // x.X * y.X + x.Y * y.Y
+    public static double Dot(Vector2d x, Vector2d y) => x.X * y.X + x.Y * y.Y;
     public static double AbsDot(Vector2d x, Vector2d y) => double.Abs(Dot(x, y));
     public static double Length(Vector2d v) => double.Sqrt(LengthSquared(v));
     public static double LengthSquared(Vector2d v) => Dot(v, v);
     public static double MinElement(Vector2d v) => double.Min(v.X, v.Y);
     public static double MaxElement(Vector2d v) => double.Max(v.X, v.Y);
-    public static bool HasNan(Vector2d v) => double.IsNaN(v.X) || double.IsNaN(v.Y);
+    public static bool HasNaN(Vector2d v) => double.IsNaN(v.X) || double.IsNaN(v.Y);
     public static bool HasInf(Vector2d v) => double.IsInfinity(v.X) || double.IsInfinity(v.Y);
 
     public readonly Vector2f AsFloat2() => new((float)X, (float)Y);

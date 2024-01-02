@@ -115,7 +115,7 @@ public struct Vector4f
     public static float Sum(Vector4f v) => v.X + v.Y + v.Z + v.W;
     public static float MinElement(Vector4f v) => float.Min(float.Min(float.Min(v.X, v.Y), v.Z), v.W);
     public static float MaxElement(Vector4f v) => float.Max(float.Max(float.Max(v.X, v.Y), v.Z), v.W);
-    public static bool HasNan(Vector4f v) => float.IsNaN(v.X) || float.IsNaN(v.Y) || float.IsNaN(v.Z) || float.IsNaN(v.W);
+    public static bool HasNaN(Vector4f v) => float.IsNaN(v.X) || float.IsNaN(v.Y) || float.IsNaN(v.Z) || float.IsNaN(v.W);
     public static bool HasInf(Vector4f v) => float.IsInfinity(v.X) || float.IsInfinity(v.Y) || float.IsInfinity(v.Z) || float.IsInfinity(v.W);
 
     public readonly Vector4d AsDouble4() => new(X, Y, Z, W);

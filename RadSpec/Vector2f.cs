@@ -89,7 +89,7 @@ public struct Vector2f
     public static float Sum(Vector2f v) => v.X + v.Y;
     public static float MinElement(Vector2f v) => float.Min(v.X, v.Y);
     public static float MaxElement(Vector2f v) => float.Max(v.X, v.Y);
-    public static bool HasNan(Vector2f v) => float.IsNaN(v.X) || float.IsNaN(v.Y);
+    public static bool HasNaN(Vector2f v) => float.IsNaN(v.X) || float.IsNaN(v.Y);
     public static bool HasInf(Vector2f v) => float.IsInfinity(v.X) || float.IsInfinity(v.Y);
 
     public readonly Vector2d AsDouble2() => new(X, Y);
