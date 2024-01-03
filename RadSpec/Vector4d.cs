@@ -86,6 +86,7 @@ public struct Vector4d
     public static Vector4d Floor(Vector4d v) => new(double.Floor(v.X), double.Floor(v.Y), double.Floor(v.Z), double.Floor(v.W));
     public static Vector4d Ceiling(Vector4d v) => new(double.Ceiling(v.X), double.Ceiling(v.Y), double.Ceiling(v.Z), double.Ceiling(v.W));
     public static Vector4d Lerp(Vector4d x, Vector4d y, double t) => new(double.Lerp(x.X, y.X, t), double.Lerp(x.Y, y.Y, t), double.Lerp(x.Z, y.Z, t), double.Lerp(x.W, y.W, t));
+    public static Vector4d Lerp(Vector4d x, Vector4d y, Vector4d t) => new(double.Lerp(x.X, y.X, t.X), double.Lerp(x.Y, y.Y, t.Y), double.Lerp(x.Z, y.Z, t.Z), double.Lerp(x.W, y.W, t.W));
     public static Vector4d Normalize(Vector4d v) => v / Length(v);
     public static Vector4d Sqrt(Vector4d v) => new(double.Sqrt(v.X), double.Sqrt(v.Y), double.Sqrt(v.Z), double.Sqrt(v.W));
     public static Vector4d Fma(Vector4d a, Vector4d b, Vector4d c) => new(double.FusedMultiplyAdd(a.X, b.X, c.X), double.FusedMultiplyAdd(a.Y, b.Y, c.Y), double.FusedMultiplyAdd(a.Z, b.Z, c.Z), double.FusedMultiplyAdd(a.W, b.W, c.W));

@@ -97,6 +97,7 @@ public struct Vector4f
     public static Vector4f Floor(Vector4f v) => new(float.Floor(v.X), float.Floor(v.Y), float.Floor(v.Z), float.Floor(v.W));
     public static Vector4f Ceiling(Vector4f v) => new(float.Ceiling(v.X), float.Ceiling(v.Y), float.Ceiling(v.Z), float.Ceiling(v.W));
     public static Vector4f Lerp(Vector4f x, Vector4f y, float t) => Vector4.Lerp(x, y, t);
+    public static Vector4f Lerp(Vector4f x, Vector4f y, Vector4f t) => new(float.Lerp(x.X, y.X, t.X), float.Lerp(x.Y, y.Y, t.Y), float.Lerp(x.Z, y.Z, t.Z), float.Lerp(x.W, y.W, t.W));
     public static Vector4f Normalize(Vector4f v) => Vector4.Normalize(v);
     public static Vector4f Sqrt(Vector4f v) => Vector4.SquareRoot(v);
     public static Vector4f Fma(Vector4f a, Vector4f b, Vector4f c) => new(float.FusedMultiplyAdd(a.X, b.X, c.X), float.FusedMultiplyAdd(a.Y, b.Y, c.Y), float.FusedMultiplyAdd(a.Z, b.Z, c.Z), float.FusedMultiplyAdd(a.W, b.W, c.W));

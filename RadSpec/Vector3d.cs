@@ -80,6 +80,7 @@ public struct Vector3d
     public static Vector3d Floor(Vector3d v) => new(double.Floor(v.X), double.Floor(v.Y), double.Floor(v.Z));
     public static Vector3d Ceiling(Vector3d v) => new(double.Ceiling(v.X), double.Ceiling(v.Y), double.Ceiling(v.Z));
     public static Vector3d Lerp(Vector3d x, Vector3d y, double t) => new(double.Lerp(x.X, y.X, t), double.Lerp(x.Y, y.Y, t), double.Lerp(x.Z, y.Z, t));
+    public static Vector3d Lerp(Vector3d x, Vector3d y, Vector3d t) => new(double.Lerp(x.X, y.X, t.X), double.Lerp(x.Y, y.Y, t.Y), double.Lerp(x.Z, y.Z, t.Z));
     public static Vector3d Normalize(Vector3d v) => v / Length(v);
     public static Vector3d Sqrt(Vector3d v) => new(double.Sqrt(v.X), double.Sqrt(v.Y), double.Sqrt(v.Z));
     public static Vector3d Fma(Vector3d a, Vector3d b, Vector3d c) => new(double.FusedMultiplyAdd(a.X, b.X, c.X), double.FusedMultiplyAdd(a.Y, b.Y, c.Y), double.FusedMultiplyAdd(a.Z, b.Z, c.Z));

@@ -81,6 +81,7 @@ public struct Vector3f
     public static Vector3f Floor(Vector3f v) => new(float.Floor(v.X), float.Floor(v.Y), float.Floor(v.Z));
     public static Vector3f Ceiling(Vector3f v) => new(float.Ceiling(v.X), float.Ceiling(v.Y), float.Ceiling(v.Z));
     public static Vector3f Lerp(Vector3f x, Vector3f y, float t) => Vector3.Lerp(x, y, t);
+    public static Vector3f Lerp(Vector3f x, Vector3f y, Vector3f t) => new(float.Lerp(x.X, y.X, t.X), float.Lerp(x.Y, y.Y, t.Y), float.Lerp(x.Z, y.Z, t.Z));
     public static Vector3f Normalize(Vector3f v) => Vector3.Normalize(v);
     public static Vector3f Sqrt(Vector3f v) => Vector3.SquareRoot(v);
     public static Vector3f Fma(Vector3f a, Vector3f b, Vector3f c) => new(float.FusedMultiplyAdd(a.X, b.X, c.X), float.FusedMultiplyAdd(a.Y, b.Y, c.Y), float.FusedMultiplyAdd(a.Z, b.Z, c.Z));

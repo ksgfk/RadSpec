@@ -71,6 +71,7 @@ public struct Vector2f
     public static Vector2f Floor(Vector2f v) => new(float.Floor(v.X), float.Floor(v.Y));
     public static Vector2f Ceiling(Vector2f v) => new(float.Ceiling(v.X), float.Ceiling(v.Y));
     public static Vector2f Lerp(Vector2f x, Vector2f y, float t) => Vector2.Lerp(x, y, t);
+    public static Vector2f Lerp(Vector2f x, Vector2f y, Vector2f t) => new(float.Lerp(x.X, y.X, t.X), float.Lerp(x.Y, y.Y, t.Y));
     public static Vector2f Normalize(Vector2f v) => Vector2.Normalize(v);
     public static Vector2f Sqrt(Vector2f v) => Vector2.SquareRoot(v);
     public static Vector2f Fma(Vector2f a, Vector2f b, Vector2f c) => new(float.FusedMultiplyAdd(a.X, b.X, c.X), float.FusedMultiplyAdd(a.Y, b.Y, c.Y));

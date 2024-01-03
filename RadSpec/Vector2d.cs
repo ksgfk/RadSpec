@@ -74,6 +74,7 @@ public struct Vector2d
     public static Vector2d Floor(Vector2d v) => new(double.Floor(v.X), double.Floor(v.Y));
     public static Vector2d Ceiling(Vector2d v) => new(double.Ceiling(v.X), double.Ceiling(v.Y));
     public static Vector2d Lerp(Vector2d x, Vector2d y, double t) => new(double.Lerp(x.X, y.X, t), double.Lerp(x.Y, y.Y, t));
+    public static Vector2d Lerp(Vector2d x, Vector2d y, Vector2d t) => new(double.Lerp(x.X, y.X, t.X), double.Lerp(x.Y, y.Y, t.Y));
     public static Vector2d Normalize(Vector2d v) => v / Length(v);
     public static Vector2d Sqrt(Vector2d v) => new(double.Sqrt(v.X), double.Sqrt(v.Y));
     public static Vector2d Fma(Vector2d a, Vector2d b, Vector2d c) => new(double.FusedMultiplyAdd(a.X, b.X, c.X), double.FusedMultiplyAdd(a.Y, b.Y, c.Y));
