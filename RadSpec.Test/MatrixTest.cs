@@ -14,14 +14,14 @@ public class MatrixTest
             1,
             0.1f,
             100);
-        Assert.AreEqual(Matrix4x4.Transpose(b), a.Mat.Value);
+        Assert.AreEqual(Matrix4x4.Transpose(b), a.Matrix.Value);
         Assert.IsTrue(Matrix4x4.Invert(b, out var c));
         Matrix4x4 d = Matrix4x4.Transpose(c);
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                Assert.AreEqual(d[i, j], a.Inv.Value[i, j], 0.000001f);
+                Assert.AreEqual(d[i, j], a.InvMatrix.Value[i, j], 0.000001f);
             }
         }
     }

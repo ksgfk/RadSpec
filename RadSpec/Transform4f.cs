@@ -5,8 +5,10 @@ public readonly struct Transform4f
     private readonly Matrix4x4f _mat;
     private readonly Matrix4x4f _inv;
 
-    public Matrix4x4f Mat => _mat;
-    public Matrix4x4f Inv => _inv;
+    public Matrix4x4f Matrix => _mat;
+    public Matrix4x4f InvMatrix => _inv;
+
+    public Vector3f Translation => new(_mat.M14, _mat.M24, _mat.M34);
 
     public Transform4f(Matrix4x4f mat, Matrix4x4f inv)
     {
@@ -104,7 +106,7 @@ public readonly struct Transform4f
         return new Transform4f(inv, mat);
     }
 
-    public static Transform4f Multiply(Transform4f a, Transform4f b) => new(a.Mat * b.Mat, b.Inv * a.Inv); //注意到逆矩阵是反过来乘的
+    public static Transform4f Multiply(Transform4f a, Transform4f b) => new(a.Matrix * b.Matrix, b.InvMatrix * a.InvMatrix); //注意到逆矩阵是反过来乘的
 
     public static Transform4f Invert(Transform4f v) => new(v._inv, v._mat);
 

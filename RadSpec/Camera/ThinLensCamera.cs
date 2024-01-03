@@ -33,9 +33,14 @@ public class ThinLensCamera : ICamera
 
     public Ray3f SampleRay(float time, float xi1, Vector2f xi2, Vector2f xi3)
     {
-        Vector3f localP = _screenToCamera.ApplyAffine(new Vector3f(xi2, 0));
-        Vector3f worldP = _cameraToWorld.ApplyAffine(localP);
-        return new Ray3f(localP, worldP, 0, 0, default);
+        Vector3f nearPlane = _screenToCamera.ApplyAffine(new Vector3f(xi2, 0));
+        Vector3f cameraDir = Normalize(nearPlane);
+        Vector3f worldDir = Normalize(_cameraToWorld.ApplyLinear(cameraDir));
+        float nearT = Near / worldDir.Z;
+        float farT = Far / worldDir.Z;
+        Vector3f worldPos = _cameraToWorld.Translation + worldDir * nearT;
+        float maxT = farT - nearT;
+        return new Ray3f(worldPos, worldDir, maxT, 0, default);
     }
 
     public SampledWavelength SampleWavelengths(float xi)
