@@ -90,6 +90,20 @@ public readonly struct Transform4f
         return new Transform4f(mat, inv);
     }
 
+    public static Transform4f LookAt(Vector3f pos, Vector3f target, Vector3f up)
+    {
+        Vector3f dir = Normalize(target - pos);
+        Vector3f right = Normalize(Cross(Normalize(up), dir));
+        Vector3f newUp = Cross(dir, right);
+        Matrix4x4f mat = new(
+            right.X, newUp.X, dir.X, pos.X,
+            right.Y, newUp.Y, dir.Y, pos.Y,
+            right.Z, newUp.Z, dir.Z, pos.Z,
+            0, 0, 0, 1);
+        Matrix4x4f.Invert(mat, out Matrix4x4f inv);
+        return new Transform4f(inv, mat);
+    }
+
     public static Transform4f Multiply(Transform4f a, Transform4f b) => new(a.Mat * b.Mat, b.Inv * a.Inv); //注意到逆矩阵是反过来乘的
 
     public static Transform4f Invert(Transform4f v) => new(v._inv, v._mat);
