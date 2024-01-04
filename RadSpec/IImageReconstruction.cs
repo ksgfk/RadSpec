@@ -29,5 +29,5 @@ public interface IImageReconstruction
 
     float Eval(Vector2f x);
 
-    (Vector2f, float) Sample(Vector2f xi);
+    (Vector2f value, float weight) Sample(Vector2f xi);
 }

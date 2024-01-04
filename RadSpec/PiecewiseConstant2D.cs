@@ -16,6 +16,9 @@ public class PiecewiseConstant2D
     private readonly float _height;
 
     public float Integral => _marginal.Integral;
+    public float Width => _width;
+    public float Height => _height;
+    public ReadOnlySpan<PiecewiseConstant1D> Conditional => _conditional;
 
     public PiecewiseConstant2D(ReadOnlySpan<float> f, int width, int height, Vector2f min, Vector2f max)
     {

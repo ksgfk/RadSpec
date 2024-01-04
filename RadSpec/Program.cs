@@ -1,19 +1,31 @@
 using RadSpec;
 using RadSpec.Camera;
+using RadSpec.ImageReconstruction;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-float[] f = [
-    1,2,4,7,10,15,22,14,9,9,2,1,
-    2,1,4,5,6,10,11,12,6,2,1,1,
-    1,1,1,1,1,2,1,1,1,1,1,1,
-    2,2,2,2,2,1,2,2,2,2,2,2,
-    2,1,3,4,5,6,5,4,3,2,1,1];
-PiecewiseConstant2D d = new(f, 12, 5, Vector2f.Zero, Vector2f.One);
+GaussianReconstruction g = new(new Vector2f(1, 1), 0.5f);
 {
-    var t = d.Sample(new(0.5f, 0.5f));
-    Console.WriteLine(t);
+    var a = g.Sample(new(0.5f, 0.5f));
+    Console.WriteLine(a);
 }
+{
+    var a = g.Sample(new(0, 0));
+    Console.WriteLine(a);
+}
+{
+    var a = g.Sample(new(0.99999f, 0.99999f));
+    Console.WriteLine(a);
+}
+{
+    var a = g.Sample(new(0.124f, 0.152f));
+    Console.WriteLine(a);
+}
+{
+    var a = g.Sample(new(0.356f, 0.891f));
+    Console.WriteLine(a);
+}
+
 
 // const int width = 1280, height = 720;
 // ThinLensCamera c = new(new(6, 0, -10), new(6, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);

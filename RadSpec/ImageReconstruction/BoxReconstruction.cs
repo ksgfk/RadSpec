@@ -16,7 +16,7 @@ public class BoxReconstruction : IImageReconstruction
         return (float.Abs(x.X) <= Radius.X && float.Abs(x.Y) <= Radius.Y) ? 1 : 0;
     }
 
-    public (Vector2f, float) Sample(Vector2f xi)
+    public (Vector2f value, float weight) Sample(Vector2f xi)
     {
         Vector2f p = Lerp(-Radius, Radius, xi);
         return (p, 1);
