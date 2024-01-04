@@ -1,3 +1,4 @@
+using System.Numerics;
 using BenchmarkDotNet.Attributes;
 
 namespace RadSpec.Benchmark;
@@ -33,7 +34,9 @@ public class RadToDeg
     {
         for (int i = 0; i < _a.Length; i++)
         {
-            _a[i] = MathExt.Degree(_a[i]);
+            _a[i] = Degree(_a[i]);
         }
     }
+
+    private static T Degree<T>(T radian) where T : IFloatingPoint<T> => T.CreateChecked(180) / T.Pi * radian;
 }

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace RadSpec;
 
-public struct Vector3d
+public struct Vector3d : IVector<Vector3d, double>
 {
     public double X, Y, Z;
 
@@ -13,7 +13,7 @@ public struct Vector3d
         set => this = this.WithElement(i, value);
     }
 
-    public const int Count = 3;
+    public static int Count => 3;
     public static Vector3d Zero => new(0);
     public static Vector3d One => new(1);
 

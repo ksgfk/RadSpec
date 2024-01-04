@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace RadSpec;
 
-public struct Vector3f
+public struct Vector3f : IVector<Vector3f, float>
 {
     public Vector3 Value;
 
@@ -11,7 +11,7 @@ public struct Vector3f
     public float Z { readonly get => Value.Z; set => Value.Z = value; }
     public float this[int i] { readonly get => Value[i]; set => Value[i] = value; }
 
-    public const int Count = 3;
+    public static int Count => 3;
     public static Vector3f Zero => new(0);
     public static Vector3f One => new(1);
 

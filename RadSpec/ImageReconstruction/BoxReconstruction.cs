@@ -1,4 +1,4 @@
-namespace RadSpec.Reconstruction;
+namespace RadSpec.ImageReconstruction;
 
 public class BoxReconstruction : IImageReconstruction
 {

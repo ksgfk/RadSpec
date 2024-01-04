@@ -38,4 +38,9 @@ public static class MathExt
         }
         return (validLinear || validQuadratic, x0, x1);
     }
+
+    public static float Gaussian(float x, float mu, float sigma)
+    {
+        return 1 / float.Sqrt(2 * float.Pi * sigma * sigma) * float.Exp(-Sqr(x - mu) / (2 * sigma * sigma));
+    }
 }

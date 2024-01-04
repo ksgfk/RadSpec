@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace RadSpec;
 
-public struct Vector2i
+public struct Vector2i : IVector<Vector2i, int>
 {
     public int X, Y;
 
@@ -12,7 +12,7 @@ public struct Vector2i
         set => this = this.WithElement(i, value);
     }
 
-    public const int Count = 2;
+    public static int Count => 2;
     public static Vector2i Zero => new(0);
     public static Vector2i One => new(1);
 

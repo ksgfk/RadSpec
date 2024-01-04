@@ -3,45 +3,57 @@ using RadSpec.Camera;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-const int width = 1280, height = 720;
-ThinLensCamera c = new(new(6, 0, -10), new(6, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);
-using var img = new Image<Rgba32>(width, height);
-img.ProcessPixelRows((a) =>
+float[] f = [
+    1,2,4,7,10,15,22,14,9,9,2,1,
+    2,1,4,5,6,10,11,12,6,2,1,1,
+    1,1,1,1,1,2,1,1,1,1,1,1,
+    2,2,2,2,2,1,2,2,2,2,2,2,
+    2,1,3,4,5,6,5,4,3,2,1,1];
+PiecewiseConstant2D d = new(f, 12, 5, Vector2f.Zero, Vector2f.One);
 {
-    for (int j = 0; j < height; j++)
-    {
-        var row = a.GetRowSpan(j);
-        for (int i = 0; i < row.Length; i++)
-        {
-            Ray3f ray = c.SampleRay(0, default, new Vector2f(i / (width - 1.0f), j / (height - 1.0f)), default);
-            var (isHit, t) = SphereIntersect(ray, new Vector3f(6f, 3f, 0), 2f);
-            if (isHit)
-            {
-                row[i] = new Rgba32(255, 255, 255, 255);
-            }
-            else
-            {
-                row[i] = new Rgba32(0, 0, 0, 255);
-            }
-        }
-    }
-});
-img.SaveAsPng("/Users/admin/Desktop/test.png");
-Console.WriteLine("DONE");
-
-static (bool, float) SphereIntersect(Ray3f ray, Vector3f center, float radius)
-{
-    Vector3f o = ray.O - center;
-    float a = LengthSquared(ray.D);
-    float b = 2 * Dot(o, ray.D);
-    float c = LengthSquared(o) - Sqr(radius);
-    var (isFind, nearT, farT) = SolveQuadratic(a, b, c);
-    bool outBounds = !(nearT <= ray.MaxT && farT >= 0);
-    bool inBounds = nearT < 0 && farT > ray.MaxT;
-    bool isHit = isFind && !outBounds && !inBounds;
-    float t = nearT < 0 ? farT : nearT;
-    return (isHit, t);
+    var t = d.Sample(new(0.5f, 0.5f));
+    Console.WriteLine(t);
 }
+
+// const int width = 1280, height = 720;
+// ThinLensCamera c = new(new(6, 0, -10), new(6, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);
+// using var img = new Image<Rgba32>(width, height);
+// img.ProcessPixelRows((a) =>
+// {
+//     for (int j = 0; j < height; j++)
+//     {
+//         var row = a.GetRowSpan(j);
+//         for (int i = 0; i < row.Length; i++)
+//         {
+//             Ray3f ray = c.SampleRay(0, default, new Vector2f(i / (width - 1.0f), j / (height - 1.0f)), default);
+//             var (isHit, t) = SphereIntersect(ray, new Vector3f(6f, 3f, 0), 2f);
+//             if (isHit)
+//             {
+//                 row[i] = new Rgba32(255, 255, 255, 255);
+//             }
+//             else
+//             {
+//                 row[i] = new Rgba32(0, 0, 0, 255);
+//             }
+//         }
+//     }
+// });
+// img.SaveAsPng("/Users/admin/Desktop/test.png");
+// Console.WriteLine("DONE");
+
+// static (bool, float) SphereIntersect(Ray3f ray, Vector3f center, float radius)
+// {
+//     Vector3f o = ray.O - center;
+//     float a = LengthSquared(ray.D);
+//     float b = 2 * Dot(o, ray.D);
+//     float c = LengthSquared(o) - Sqr(radius);
+//     var (isFind, nearT, farT) = SolveQuadratic(a, b, c);
+//     bool outBounds = !(nearT <= ray.MaxT && farT >= 0);
+//     bool inBounds = nearT < 0 && farT > ray.MaxT;
+//     bool isHit = isFind && !outBounds && !inBounds;
+//     float t = nearT < 0 ? farT : nearT;
+//     return (isHit, t);
+// }
 
 // using var img = new Image<Rgba32>(500, 500);
 // img.ProcessPixelRows((a) =>
