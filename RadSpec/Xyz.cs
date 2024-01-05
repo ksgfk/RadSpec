@@ -15,7 +15,7 @@ public readonly struct Xyz : IEquatable<Xyz>
 
     public Xyz(float x, float y, float z)
     {
-        _value = new Vector3f(x, y, z);
+        _value = Float3(x, y, z);
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public readonly struct Xyz : IEquatable<Xyz>
     /// </summary>
     public Vector2f ChromaticityCoord()
     {
-        return new Vector2f(X / (X + Y + Z), Y / (X + Y + Z));
+        return Float2(X / (X + Y + Z), Y / (X + Y + Z));
     }
 
     public static Xyz FromChromaticityCoord(Vector2f xy, float y = 1)

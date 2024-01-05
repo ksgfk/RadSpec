@@ -46,6 +46,11 @@ public struct Vector4f : IVector<Vector4f, float>
         Value = new Vector4(x, y, zw.X, zw.Y);
     }
 
+    public Vector4f(Vector2f xy, Vector2f zw)
+    {
+        Value = new Vector4(xy.Value, zw.X, zw.Y);
+    }
+
     public Vector4f(Vector3f xyz, float w)
     {
         Value = new Vector4(xyz.Value, w);

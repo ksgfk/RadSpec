@@ -3,7 +3,6 @@ namespace RadSpec.ImageReconstruction;
 public class GaussianReconstruction : IImageReconstruction
 {
     private readonly PiecewiseConstant2D _dist;
-    private readonly float[] _eval;
     private readonly Vector2f _radius;
     private readonly float _sigma;
     private readonly float _expX;
@@ -22,19 +21,18 @@ public class GaussianReconstruction : IImageReconstruction
 
         Vector2f min = -_radius;
         Vector2f max = _radius;
-        Vector2i sample = Floor(_radius * new Vector2f(SampleCount)).AsInt2();
+        Vector2i sample = Floor(_radius * Float2(SampleCount)).AsInt2();
         float[] pdf = new float[sample.X * sample.Y];
         for (int j = 0; j < sample.Y; j++)
         {
             for (int i = 0; i < sample.X; i++)
             {
-                Vector2f offset = (new Vector2f(i, j) + new Vector2f(0.5f)) / sample.AsFloat2();
+                Vector2f offset = (Float2(i, j) + Float2(0.5f)) / sample.AsFloat2();
                 Vector2f p = Lerp(min, max, offset);
                 pdf[i + j * sample.X] = Eval(p);
             }
         }
         _dist = new PiecewiseConstant2D(pdf, sample.X, sample.Y, min, max);
-        _eval = pdf;
     }
 
     public float Eval(Vector2f x)

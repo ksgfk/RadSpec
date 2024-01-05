@@ -44,6 +44,7 @@ public struct Vector4d : IVector<Vector4d, double>
     public Vector4d(Vector2d xy, double z, double w) : this(xy.X, xy.Y, z, w) { }
     public Vector4d(double x, Vector2d yz, double w) : this(x, yz.X, yz.Y, w) { }
     public Vector4d(double x, double y, Vector2d zw) : this(x, y, zw.X, zw.Y) { }
+    public Vector4d(Vector2d xy, Vector2d zw) : this(xy.X, xy.Y, zw.X, zw.Y) { }
     public Vector4d(Vector3d xyz, double w) : this(xyz.X, xyz.Y, xyz.Z, w) { }
     public Vector4d(double x, Vector3d yzw) : this(x, yzw.X, yzw.Y, yzw.Z) { }
 

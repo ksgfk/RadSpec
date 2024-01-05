@@ -37,6 +37,6 @@ public static class SpectrumUtility
         double y = s.Eval(wavelength.Lambda.Y);
         double z = s.Eval(wavelength.Lambda.Z);
         double w = s.Eval(wavelength.Lambda.W);
-        return new Vector4d(x, y, z, w);
+        return Double4(x, y, z, w);
     }
 }

@@ -33,7 +33,7 @@ public class ThinLensCamera : ICamera
 
     public Ray3f SampleRay(float time, float xi1, Vector2f xi2, Vector2f xi3)
     {
-        Vector3f nearPlane = _screenToCamera.ApplyAffine(new Vector3f(xi2, 0));
+        Vector3f nearPlane = _screenToCamera.ApplyAffine(Float3(xi2, 0));
         Vector3f cameraDir = Normalize(nearPlane);
         Vector3f worldDir = Normalize(_cameraToWorld.ApplyLinear(cameraDir));
         float nearT = Near / worldDir.Z;

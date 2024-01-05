@@ -18,13 +18,13 @@ public readonly struct Transform4f
 
     public Vector3f ApplyAffine(Vector3f v)
     {
-        Vector4f t = _mat * new Vector4f(v, 1);
+        Vector4f t = _mat * Float4(v, 1);
         return t.XYZ / t.W;
     }
 
     public Vector3f ApplyLinear(Vector3f v)
     {
-        return new Vector3f(
+        return Float3(
             _mat.M11 * v.X + _mat.M12 * v.Y + _mat.M13 * v.Z,
             _mat.M21 * v.X + _mat.M22 * v.Y + _mat.M23 * v.Z,
             _mat.M31 * v.X + _mat.M32 * v.Y + _mat.M33 * v.Z);
@@ -62,15 +62,15 @@ public readonly struct Transform4f
 
     public static Transform4f Scale(float x, float y, float z)
     {
-        Matrix4x4f mat = FromDiagonal(new Vector4f(x, y, z, 1));
-        Matrix4x4f inv = FromDiagonal(new Vector4f(1 / x, 1 / y, 1 / z, 1));
+        Matrix4x4f mat = FromDiagonal(Float4(x, y, z, 1));
+        Matrix4x4f inv = FromDiagonal(Float4(1 / x, 1 / y, 1 / z, 1));
         return new Transform4f(mat, inv);
     }
 
     public static Transform4f Scale(Vector3f v)
     {
-        Matrix4x4f mat = FromDiagonal(new Vector4f(v, 1));
-        Matrix4x4f inv = FromDiagonal(new Vector4f(1 / v, 1));
+        Matrix4x4f mat = FromDiagonal(Float4(v, 1));
+        Matrix4x4f inv = FromDiagonal(Float4(1 / v, 1));
         return new Transform4f(mat, inv);
     }
 

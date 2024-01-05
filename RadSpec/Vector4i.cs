@@ -35,6 +35,7 @@ public struct Vector4i : IVector<Vector4i, int>
     public Vector4i(Vector2i xy, int z, int w) : this(xy.X, xy.Y, z, w) { }
     public Vector4i(int x, Vector2i yz, int w) : this(x, yz.X, yz.Y, w) { }
     public Vector4i(int x, int y, Vector2i zw) : this(x, y, zw.X, zw.Y) { }
+    public Vector4i(Vector2i xy, Vector2i zw) : this(xy.X, xy.Y, zw.X, zw.Y) { }
     public Vector4i(Vector3i xyz, int w) : this(xyz.X, xyz.Y, xyz.Z, w) { }
     public Vector4i(int x, Vector3i yzw) : this(x, yzw.X, yzw.Y, yzw.Z) { }
 

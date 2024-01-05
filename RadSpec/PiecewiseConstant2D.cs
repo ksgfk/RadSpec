@@ -52,7 +52,7 @@ public class PiecewiseConstant2D
     public float Pdf(Vector2f value)
     {
         value = (value - _min) / (_max - _min);
-        Vector2i offset = Floor(value * new Vector2f(_width, _height)).AsInt2();
+        Vector2i offset = Floor(value * Float2(_width, _height)).AsInt2();
         return _conditional[offset.Y].Function[offset.X] / _marginal.Integral;
     }
 }

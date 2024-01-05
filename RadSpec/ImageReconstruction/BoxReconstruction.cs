@@ -4,7 +4,7 @@ public class BoxReconstruction : IImageReconstruction
 {
     public Vector2f Radius { get; }
 
-    public BoxReconstruction() : this(new Vector2f(0.5f)) { }
+    public BoxReconstruction() : this(Float2(0.5f)) { }
 
     public BoxReconstruction(Vector2f radius)
     {

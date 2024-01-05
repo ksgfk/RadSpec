@@ -10,5 +10,6 @@ global using static RadSpec.Vector4i;
 global using static RadSpec.Matrix3x3f;
 global using static RadSpec.Matrix4x4f;
 global using static RadSpec.MathExt;
+global using static RadSpec.VectorUtility;
 global using static System.Math;
 global using static System.MathF;

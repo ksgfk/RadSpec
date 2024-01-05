@@ -38,8 +38,8 @@ public struct Vector3d : IVector<Vector3d, double>
         Z = v.Z;
     }
 
-    public Vector3d(Vector2d xy, float z) : this(xy.X, xy.Y, z) { }
-    public Vector3d(float x, Vector2d yz) : this(x, yz.X, yz.Y) { }
+    public Vector3d(Vector2d xy, double z) : this(xy.X, xy.Y, z) { }
+    public Vector3d(double x, Vector2d yz) : this(x, yz.X, yz.Y) { }
 
     public static Vector3d operator +(Vector3d lhs, Vector3d rhs) => new(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z);
     public static Vector3d operator -(Vector3d lhs, Vector3d rhs) => new(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
