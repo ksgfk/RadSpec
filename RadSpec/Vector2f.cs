@@ -92,6 +92,7 @@ public struct Vector2f : IVector<Vector2f, float>
     public static float MaxElement(Vector2f v) => float.Max(v.X, v.Y);
     public static bool HasNaN(Vector2f v) => float.IsNaN(v.X) || float.IsNaN(v.Y);
     public static bool HasInf(Vector2f v) => float.IsInfinity(v.X) || float.IsInfinity(v.Y);
+    public static float Average(Vector2f v) => Sum(v) / Count;
 
     public readonly Vector2d AsDouble2() => new(X, Y);
     public readonly Vector2i AsInt2() => new((int)X, (int)Y);

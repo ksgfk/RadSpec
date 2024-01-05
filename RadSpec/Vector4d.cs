@@ -107,6 +107,7 @@ public struct Vector4d : IVector<Vector4d, double>
     public static double MaxElement(Vector4d v) => double.Max(double.Max(double.Max(v.X, v.Y), v.Z), v.W);
     public static bool HasNaN(Vector4d v) => double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z) || double.IsNaN(v.W);
     public static bool HasInf(Vector4d v) => double.IsInfinity(v.X) || double.IsInfinity(v.Y) || double.IsInfinity(v.Z) || double.IsInfinity(v.W);
+    public static double Average(Vector4d v) => Sum(v) / Count;
 
     public readonly Vector4f AsFloat4() => new((float)X, (float)Y, (float)Z, (float)W);
     public readonly Vector4i AsInt4() => new((int)X, (int)Y, (int)Z, (int)W);

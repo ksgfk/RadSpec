@@ -4,6 +4,8 @@ public readonly struct SampledSpectrum
 {
     private readonly Vector4f _value;
 
+    public Vector4f Value => _value;
+
     public SampledSpectrum(float value)
     {
         _value = new Vector4f(value);
@@ -18,6 +20,9 @@ public readonly struct SampledSpectrum
     {
         _value = value;
     }
+
+    public static implicit operator Vector4f(SampledSpectrum v) => v._value;
+    public static implicit operator SampledSpectrum(Vector4f v) => new(v);
 
     public static SampledSpectrum operator +(in SampledSpectrum lhs, in SampledSpectrum rhs) => new(lhs._value + rhs._value);
     public static SampledSpectrum operator -(in SampledSpectrum lhs, in SampledSpectrum rhs) => new(lhs._value - rhs._value);

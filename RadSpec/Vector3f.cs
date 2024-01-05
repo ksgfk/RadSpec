@@ -102,6 +102,7 @@ public struct Vector3f : IVector<Vector3f, float>
     public static float MaxElement(Vector3f v) => float.Max(float.Max(v.X, v.Y), v.Z);
     public static bool HasNaN(Vector3f v) => float.IsNaN(v.X) || float.IsNaN(v.Y) || float.IsNaN(v.Z);
     public static bool HasInf(Vector3f v) => float.IsInfinity(v.X) || float.IsInfinity(v.Y) || float.IsInfinity(v.Z);
+    public static float Average(Vector3f v) => Sum(v) / Count;
 
     public static Vector3f Cross(Vector3f x, Vector3f y) => Vector3.Cross(x.Value, y.Value);
 

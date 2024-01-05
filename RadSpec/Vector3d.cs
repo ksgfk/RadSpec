@@ -100,6 +100,7 @@ public struct Vector3d : IVector<Vector3d, double>
     public static double MaxElement(Vector3d v) => double.Max(double.Max(v.X, v.Y), v.Z);
     public static bool HasNaN(Vector3d v) => double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z);
     public static bool HasInf(Vector3d v) => double.IsInfinity(v.X) || double.IsInfinity(v.Y) || double.IsInfinity(v.Z);
+    public static double Average(Vector3d v) => Sum(v) / Count;
 
     public static Vector3d Cross(Vector3d x, Vector3d y) => new(
         x.Y * y.Z - x.Z * y.Y,

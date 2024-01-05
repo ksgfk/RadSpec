@@ -123,6 +123,7 @@ public struct Vector4f : IVector<Vector4f, float>
     public static float MaxElement(Vector4f v) => float.Max(float.Max(float.Max(v.X, v.Y), v.Z), v.W);
     public static bool HasNaN(Vector4f v) => float.IsNaN(v.X) || float.IsNaN(v.Y) || float.IsNaN(v.Z) || float.IsNaN(v.W);
     public static bool HasInf(Vector4f v) => float.IsInfinity(v.X) || float.IsInfinity(v.Y) || float.IsInfinity(v.Z) || float.IsInfinity(v.W);
+    public static float Average(Vector4f v) => Sum(v) / Count;
 
     public readonly Vector4d AsDouble4() => new(X, Y, Z, W);
     public readonly Vector4i AsInt4() => new((int)X, (int)Y, (int)Z, (int)W);
