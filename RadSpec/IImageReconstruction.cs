@@ -26,6 +26,7 @@ namespace RadSpec;
 public interface IImageReconstruction
 {
     Vector2f Radius { get; }
+    float Integral { get; }
 
     float Eval(Vector2f x);
 

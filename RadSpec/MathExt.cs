@@ -43,4 +43,10 @@ public static class MathExt
     {
         return 1 / float.Sqrt(2 * float.Pi * sigma * sigma) * float.Exp(-Sqr(x - mu) / (2 * sigma * sigma));
     }
+
+    //public static float GaussianIntegral(float x0, float x1, float mu, float sigma)
+    //{
+    //    float sigmaRoot2 = sigma * float.Sqrt(2);
+    //    return 0.5f * (float.Erf((mu - x0) / sigmaRoot2) - std::erf((mu - x1) / sigmaRoot2));
+    //}
 }

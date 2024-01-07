@@ -4,26 +4,38 @@ using RadSpec.ImageReconstruction;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-GaussianReconstruction g = new(new Vector2f(1, 1), 0.5f);
+
+for (int i = 0; i < 32; i++)
 {
-    var a = g.Sample(new(0.5f, 0.5f));
-    Console.WriteLine(a);
+    Console.WriteLine(TestErf(-2 + 4.0 / 32 * i));
 }
+
+//Console.WriteLine(TestErf(-2));
+//Console.WriteLine(TestErf(0));
+//Console.WriteLine(TestErf(2));
+
+static double TestErf(double x)
 {
-    var a = g.Sample(new(0, 0));
-    Console.WriteLine(a);
+    const int level = 16;
+    double a = 2.0f / double.Sqrt(double.Pi);
+    double result = 0;
+    for (int n = 0; n <= level; n++)
+    {
+        double mol = (n % 2 == 0 ? 1 : -1) * double.Pow(x, 2 * n + 1);
+        double deno = (double)Factorial((ulong)n) * (2 * n + 1);
+        result += mol / deno;
+    }
+    return a * result;
 }
+
+static ulong Factorial(ulong x)
 {
-    var a = g.Sample(new(0.99999f, 0.99999f));
-    Console.WriteLine(a);
-}
-{
-    var a = g.Sample(new(0.124f, 0.152f));
-    Console.WriteLine(a);
-}
-{
-    var a = g.Sample(new(0.356f, 0.891f));
-    Console.WriteLine(a);
+    ulong r = 1;
+    for (ulong i = 1; i <= x; i++)
+    {
+        r *= i;
+    }
+    return r;
 }
 
 

@@ -11,6 +11,7 @@ public class GaussianReconstruction : IImageReconstruction
     private const int SampleCount = 32;
 
     public Vector2f Radius => _radius;
+    public float Integral => throw new NotImplementedException();
 
     public GaussianReconstruction(Vector2f radius, float sigma)
     {
