@@ -7,4 +7,6 @@ public interface IFilm
     IImageReconstruction Reconstruction { get; }
 
     void AddSample(Vector2i pos, SampledSpectrum value, SampledWavelength wavelength, float weight);
+
+    Vector3f GetPixelRgb(Vector2i pos);
 }

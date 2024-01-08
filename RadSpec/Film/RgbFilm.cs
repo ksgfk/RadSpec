@@ -43,4 +43,11 @@ public class RgbFilm : IFilm
         pixel.Z += b * weight;
         pixel.W += weight;
     }
+
+    public Vector3f GetPixelRgb(Vector2i pos)
+    {
+        ref Vector4d pixel = ref _pixels[pos.X + pos.Y * Resolution.X];
+        Vector3f rgb = (pixel.XYZ / pixel.W).AsFloat3();
+        return rgb;
+    }
 }

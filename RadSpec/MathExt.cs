@@ -146,6 +146,18 @@ public static partial class MathExt
         double xb = 1 - double.Exp2(c1 * xa);
         return xa < 1 ? x * c0 : double.CopySign(double.IsFinite(xb) ? xb : 1, x);
     }
+
+    public static (Vector3f b1, Vector3f b2) OrthoFrame(Vector3f n)
+    {
+        // Building an Orthonormal Basis, Revisited (JCGT Vol 6, No 1, 2017)
+        // https://www.jcgt.org/published/0006/01/01/paper-lowres.pdf
+        float sign = float.CopySign(1.0f, n.Z);
+        float a = -1.0f / (sign + n.Z);
+        float b = n.X * n.Y * a;
+        Vector3f b1 = new(1.0f + sign * n.X * n.X * a, sign * b, -sign * n.X);
+        Vector3f b2 = new(b, sign + n.Y * n.Y * a, -n.Y);
+        return (b1, b2);
+    }
 }
 
 public static partial class MathExt
