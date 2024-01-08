@@ -4,40 +4,16 @@ using RadSpec.ImageReconstruction;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-
-for (int i = 0; i < 32; i++)
+const int step = 64, start = -2, end = 2;
+for (int i = 0; i <= step; i++)
 {
-    Console.WriteLine(TestErf(-2 + 4.0 / 32 * i));
+    double x = start + (double)(int.Abs(start) + int.Abs(end)) / step * i;
+    decimal taylor = ErfTaylor((decimal)x);
+    float mif = ErfMitsuba((float)x);
+    double mid = ErfMitsuba(x);
+    double fort = ErfFortran77(x);
+    Console.WriteLine($"x:{x}\ttaylor:{taylor}\tmif:{mif}\tmid:{mid}\tfort:{fort}");
 }
-
-//Console.WriteLine(TestErf(-2));
-//Console.WriteLine(TestErf(0));
-//Console.WriteLine(TestErf(2));
-
-static double TestErf(double x)
-{
-    const int level = 16;
-    double a = 2.0f / double.Sqrt(double.Pi);
-    double result = 0;
-    for (int n = 0; n <= level; n++)
-    {
-        double mol = (n % 2 == 0 ? 1 : -1) * double.Pow(x, 2 * n + 1);
-        double deno = (double)Factorial((ulong)n) * (2 * n + 1);
-        result += mol / deno;
-    }
-    return a * result;
-}
-
-static ulong Factorial(ulong x)
-{
-    ulong r = 1;
-    for (ulong i = 1; i <= x; i++)
-    {
-        r *= i;
-    }
-    return r;
-}
-
 
 // const int width = 1280, height = 720;
 // ThinLensCamera c = new(new(6, 0, -10), new(6, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);
