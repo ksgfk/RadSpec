@@ -4,7 +4,7 @@ using RadSpec.ImageReconstruction;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-const int step = 64, start = -2, end = 2;
+const int step = 16, start = -2, end = 2;
 for (int i = 0; i <= step; i++)
 {
     double x = start + (double)(int.Abs(start) + int.Abs(end)) / step * i;
@@ -14,6 +14,9 @@ for (int i = 0; i <= step; i++)
     double fort = ErfFortran77(x);
     Console.WriteLine($"x:{x}\ttaylor:{taylor}\tmif:{mif}\tmid:{mid}\tfort:{fort}");
 }
+
+GaussianReconstruction g = new(Float2(1.5f, 1.5f), 0.5f);
+Console.WriteLine(g.Integral);
 
 // const int width = 1280, height = 720;
 // ThinLensCamera c = new(new(6, 0, -10), new(6, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);

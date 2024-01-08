@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace RadSpec;
 
-public static class MathExt
+public static partial class MathExt
 {
     /// <summary>
     /// Pow(v, 2)
@@ -44,125 +44,15 @@ public static class MathExt
         return 1 / float.Sqrt(2 * float.Pi * sigma * sigma) * float.Exp(-Sqr(x - mu) / (2 * sigma * sigma));
     }
 
-    //public static float GaussianIntegral(float x0, float x1, float mu, float sigma)
-    //{
-    //    float sigmaRoot2 = sigma * float.Sqrt(2);
-    //    return 0.5f * (float.Erf((mu - x0) / sigmaRoot2) - std::erf((mu - x1) / sigmaRoot2));
-    //}
-
-    public static float Estrin(float x,
-        float a0, float a1, float a2,
-        float a3, float a4, float a5,
-        float a6, float a7, float a8,
-        float a9, float a10, float a11)
+    public static float GaussianIntegral(float x0, float x1, float mu, float sigma)
     {
-        float b0 = float.FusedMultiplyAdd(x, a1, a0);
-        float b1 = float.FusedMultiplyAdd(x, a3, a2);
-        float b2 = float.FusedMultiplyAdd(x, a5, a4);
-        float b3 = float.FusedMultiplyAdd(x, a7, a6);
-        float b4 = float.FusedMultiplyAdd(x, a9, a8);
-        float b5 = float.FusedMultiplyAdd(x, a11, a10);
-        return Estrin(Sqr(x), b0, b1, b2, b3, b4, b5);
+        float sigmaRoot2 = sigma * float.Sqrt(2);
+        return 0.5f * (Erf((mu - x0) / sigmaRoot2) - Erf((mu - x1) / sigmaRoot2));
     }
 
-    public static double Estrin(double x,
-        double a0, double a1, double a2,
-        double a3, double a4, double a5,
-        double a6, double a7, double a8,
-        double a9, double a10, double a11)
-    {
-        double b0 = double.FusedMultiplyAdd(x, a1, a0);
-        double b1 = double.FusedMultiplyAdd(x, a3, a2);
-        double b2 = double.FusedMultiplyAdd(x, a5, a4);
-        double b3 = double.FusedMultiplyAdd(x, a7, a6);
-        double b4 = double.FusedMultiplyAdd(x, a9, a8);
-        double b5 = double.FusedMultiplyAdd(x, a11, a10);
-        return Estrin(Sqr(x), b0, b1, b2, b3, b4, b5);
-    }
+    public static float Erf(float x) => ErfMitsuba(x);
 
-    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5, float a6, float a7)
-    {
-        float b0 = float.FusedMultiplyAdd(x, a1, a0);
-        float b1 = float.FusedMultiplyAdd(x, a3, a2);
-        float b2 = float.FusedMultiplyAdd(x, a5, a4);
-        float b3 = float.FusedMultiplyAdd(x, a7, a6);
-        return Estrin(Sqr(x), b0, b1, b2, b3);
-    }
-
-    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7)
-    {
-        double b0 = double.FusedMultiplyAdd(x, a1, a0);
-        double b1 = double.FusedMultiplyAdd(x, a3, a2);
-        double b2 = double.FusedMultiplyAdd(x, a5, a4);
-        double b3 = double.FusedMultiplyAdd(x, a7, a6);
-        return Estrin(Sqr(x), b0, b1, b2, b3);
-    }
-
-    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5, float a6)
-    {
-        float b0 = float.FusedMultiplyAdd(x, a1, a0);
-        float b1 = float.FusedMultiplyAdd(x, a3, a2);
-        float b2 = float.FusedMultiplyAdd(x, a5, a4);
-        float b3 = a6;
-        return Estrin(Sqr(x), b0, b1, b2, b3);
-    }
-
-    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5, double a6)
-    {
-        double b0 = double.FusedMultiplyAdd(x, a1, a0);
-        double b1 = double.FusedMultiplyAdd(x, a3, a2);
-        double b2 = double.FusedMultiplyAdd(x, a5, a4);
-        double b3 = a6;
-        return Estrin(Sqr(x), b0, b1, b2, b3);
-    }
-
-    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5)
-    {
-        float b0 = float.FusedMultiplyAdd(x, a1, a0);
-        float b1 = float.FusedMultiplyAdd(x, a3, a2);
-        float b2 = float.FusedMultiplyAdd(x, a5, a4);
-        return Estrin(Sqr(x), b0, b1, b2);
-    }
-
-    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5)
-    {
-        double b0 = double.FusedMultiplyAdd(x, a1, a0);
-        double b1 = double.FusedMultiplyAdd(x, a3, a2);
-        double b2 = double.FusedMultiplyAdd(x, a5, a4);
-        return Estrin(Sqr(x), b0, b1, b2);
-    }
-
-    public static float Estrin(float x, float a0, float a1, float a2, float a3)
-    {
-        float b0 = float.FusedMultiplyAdd(x, a1, a0);
-        float b1 = float.FusedMultiplyAdd(x, a3, a2);
-        return Estrin(Sqr(x), b0, b1);
-    }
-
-    public static double Estrin(double x, double a0, double a1, double a2, double a3)
-    {
-        double b0 = double.FusedMultiplyAdd(x, a1, a0);
-        double b1 = double.FusedMultiplyAdd(x, a3, a2);
-        return Estrin(Sqr(x), b0, b1);
-    }
-
-    public static float Estrin(float x, float a0, float a1, float a2)
-    {
-        float b0 = float.FusedMultiplyAdd(x, a1, a0);
-        float b1 = a2;
-        return Estrin(Sqr(x), b0, b1);
-    }
-
-    public static double Estrin(double x, double a0, double a1, double a2)
-    {
-        double b0 = double.FusedMultiplyAdd(x, a1, a0);
-        double b1 = a2;
-        return Estrin(Sqr(x), b0, b1);
-    }
-
-    public static float Estrin(float x, float a0, float a1) => float.FusedMultiplyAdd(x, a1, a0);
-
-    public static double Estrin(double x, double a0, double a1) => double.FusedMultiplyAdd(x, a1, a0);
+    public static double Erf(double x) => ErfMitsuba(x);
 
     public static decimal ErfTaylor(decimal x)
     {
@@ -196,20 +86,6 @@ public static class MathExt
             return result;
         }
     }
-
-    public static T Pow3<T>(T v) where T : INumber<T> => Sqr(v) * v;
-
-    public static T Pow4<T>(T v) where T : INumber<T> => Pow3(v) * v;
-
-    public static T Pow5<T>(T v) where T : INumber<T> => Pow4(v) * v;
-
-    public static T Pow6<T>(T v) where T : INumber<T> => Pow5(v) * v;
-
-    public static T Pow7<T>(T v) where T : INumber<T> => Pow6(v) * v;
-
-    public static T Pow8<T>(T v) where T : INumber<T> => Pow7(v) * v;
-
-    public static T Pow9<T>(T v) where T : INumber<T> => Pow8(v) * v;
 
     public static double ErfFortran77(double x)
     {
@@ -270,4 +146,130 @@ public static class MathExt
         double xb = 1 - double.Exp2(c1 * xa);
         return xa < 1 ? x * c0 : double.CopySign(double.IsFinite(xb) ? xb : 1, x);
     }
+}
+
+public static partial class MathExt
+{
+    public static T Pow3<T>(T v) where T : INumber<T> => Sqr(v) * v;
+
+    public static T Pow4<T>(T v) where T : INumber<T> => Pow3(v) * v;
+
+    public static T Pow5<T>(T v) where T : INumber<T> => Pow4(v) * v;
+
+    public static T Pow6<T>(T v) where T : INumber<T> => Pow5(v) * v;
+
+    public static T Pow7<T>(T v) where T : INumber<T> => Pow6(v) * v;
+
+    public static T Pow8<T>(T v) where T : INumber<T> => Pow7(v) * v;
+
+    public static T Pow9<T>(T v) where T : INumber<T> => Pow8(v) * v;
+}
+
+public static partial class MathExt
+{
+    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8, float a9, float a10, float a11)
+    {
+        float b0 = float.FusedMultiplyAdd(x, a1, a0);
+        float b1 = float.FusedMultiplyAdd(x, a3, a2);
+        float b2 = float.FusedMultiplyAdd(x, a5, a4);
+        float b3 = float.FusedMultiplyAdd(x, a7, a6);
+        float b4 = float.FusedMultiplyAdd(x, a9, a8);
+        float b5 = float.FusedMultiplyAdd(x, a11, a10);
+        return Estrin(Sqr(x), b0, b1, b2, b3, b4, b5);
+    }
+
+    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5, float a6, float a7)
+    {
+        float b0 = float.FusedMultiplyAdd(x, a1, a0);
+        float b1 = float.FusedMultiplyAdd(x, a3, a2);
+        float b2 = float.FusedMultiplyAdd(x, a5, a4);
+        float b3 = float.FusedMultiplyAdd(x, a7, a6);
+        return Estrin(Sqr(x), b0, b1, b2, b3);
+    }
+
+    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5, float a6)
+    {
+        float b0 = float.FusedMultiplyAdd(x, a1, a0);
+        float b1 = float.FusedMultiplyAdd(x, a3, a2);
+        float b2 = float.FusedMultiplyAdd(x, a5, a4);
+        float b3 = a6;
+        return Estrin(Sqr(x), b0, b1, b2, b3);
+    }
+
+    public static float Estrin(float x, float a0, float a1, float a2, float a3, float a4, float a5)
+    {
+        float b0 = float.FusedMultiplyAdd(x, a1, a0);
+        float b1 = float.FusedMultiplyAdd(x, a3, a2);
+        float b2 = float.FusedMultiplyAdd(x, a5, a4);
+        return Estrin(Sqr(x), b0, b1, b2);
+    }
+
+    public static float Estrin(float x, float a0, float a1, float a2, float a3)
+    {
+        float b0 = float.FusedMultiplyAdd(x, a1, a0);
+        float b1 = float.FusedMultiplyAdd(x, a3, a2);
+        return Estrin(Sqr(x), b0, b1);
+    }
+
+    public static float Estrin(float x, float a0, float a1, float a2)
+    {
+        float b0 = float.FusedMultiplyAdd(x, a1, a0);
+        float b1 = a2;
+        return Estrin(Sqr(x), b0, b1);
+    }
+
+    public static float Estrin(float x, float a0, float a1) => float.FusedMultiplyAdd(x, a1, a0);
+
+    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9, double a10, double a11)
+    {
+        double b0 = double.FusedMultiplyAdd(x, a1, a0);
+        double b1 = double.FusedMultiplyAdd(x, a3, a2);
+        double b2 = double.FusedMultiplyAdd(x, a5, a4);
+        double b3 = double.FusedMultiplyAdd(x, a7, a6);
+        double b4 = double.FusedMultiplyAdd(x, a9, a8);
+        double b5 = double.FusedMultiplyAdd(x, a11, a10);
+        return Estrin(Sqr(x), b0, b1, b2, b3, b4, b5);
+    }
+
+    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7)
+    {
+        double b0 = double.FusedMultiplyAdd(x, a1, a0);
+        double b1 = double.FusedMultiplyAdd(x, a3, a2);
+        double b2 = double.FusedMultiplyAdd(x, a5, a4);
+        double b3 = double.FusedMultiplyAdd(x, a7, a6);
+        return Estrin(Sqr(x), b0, b1, b2, b3);
+    }
+
+    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5, double a6)
+    {
+        double b0 = double.FusedMultiplyAdd(x, a1, a0);
+        double b1 = double.FusedMultiplyAdd(x, a3, a2);
+        double b2 = double.FusedMultiplyAdd(x, a5, a4);
+        double b3 = a6;
+        return Estrin(Sqr(x), b0, b1, b2, b3);
+    }
+
+    public static double Estrin(double x, double a0, double a1, double a2, double a3, double a4, double a5)
+    {
+        double b0 = double.FusedMultiplyAdd(x, a1, a0);
+        double b1 = double.FusedMultiplyAdd(x, a3, a2);
+        double b2 = double.FusedMultiplyAdd(x, a5, a4);
+        return Estrin(Sqr(x), b0, b1, b2);
+    }
+
+    public static double Estrin(double x, double a0, double a1, double a2, double a3)
+    {
+        double b0 = double.FusedMultiplyAdd(x, a1, a0);
+        double b1 = double.FusedMultiplyAdd(x, a3, a2);
+        return Estrin(Sqr(x), b0, b1);
+    }
+
+    public static double Estrin(double x, double a0, double a1, double a2)
+    {
+        double b0 = double.FusedMultiplyAdd(x, a1, a0);
+        double b1 = a2;
+        return Estrin(Sqr(x), b0, b1);
+    }
+
+    public static double Estrin(double x, double a0, double a1) => double.FusedMultiplyAdd(x, a1, a0);
 }
