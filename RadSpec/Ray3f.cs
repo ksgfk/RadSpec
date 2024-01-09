@@ -1,19 +1,12 @@
 namespace RadSpec;
 
-public readonly struct Ray3f
+public readonly struct Ray3f(Vector3f o, Vector3f d, float maxT, float time, SampledWavelength wavelength)
 {
-    public readonly Vector3f O;
-    public readonly float MaxT;
-    public readonly Vector3f D;
-    public readonly float Time;
-    public readonly SampledWavelength Wavelength;
+    public readonly Vector3f O = o;
+    public readonly float MaxT = maxT;
+    public readonly Vector3f D = d;
+    public readonly float Time = time;
+    public readonly SampledWavelength Wavelength = wavelength;
 
-    public Ray3f(Vector3f o, Vector3f d, float maxT, float time, SampledWavelength wavelength)
-    {
-        O = o;
-        D = d;
-        MaxT = maxT;
-        Time = time;
-        Wavelength = wavelength;
-    }
+    public Vector3f At(float t) => Fma(D, t, O);
 }

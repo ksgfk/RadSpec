@@ -106,6 +106,15 @@ public readonly struct Transform4f
         return new Transform4f(inv, mat);
     }
 
+    public static Transform4f FromMatrix(Matrix4x4f mat)
+    {
+        if (!Matrix4x4f.Invert(mat, out Matrix4x4f inv))
+        {
+            throw new ArgumentOutOfRangeException(nameof(mat));
+        }
+        return new Transform4f(mat, inv);
+    }
+
     public static Transform4f Multiply(Transform4f a, Transform4f b) => new(a.Matrix * b.Matrix, b.InvMatrix * a.InvMatrix); //注意到逆矩阵是反过来乘的
 
     public static Transform4f Invert(Transform4f v) => new(v._inv, v._mat);

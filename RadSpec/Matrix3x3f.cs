@@ -12,6 +12,8 @@ public struct Matrix3x3f : IEquatable<Matrix3x3f>
     public float M32;
     public float M33;
 
+    public static Matrix3x3f Identity => FromDiagonal(1, 1, 1);
+
     public Matrix3x3f(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33)
     {
         M11 = m11;

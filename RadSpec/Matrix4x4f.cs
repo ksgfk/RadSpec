@@ -23,6 +23,8 @@ public struct Matrix4x4f : IEquatable<Matrix4x4f>
     public float M43 { readonly get => Value.M43; set => Value.M43 = value; }
     public float M44 { readonly get => Value.M44; set => Value.M44 = value; }
 
+    public static Matrix4x4f Identity => new(Matrix4x4.Identity);
+
     public Matrix4x4f(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44)
     {
         Value = new Matrix4x4(
