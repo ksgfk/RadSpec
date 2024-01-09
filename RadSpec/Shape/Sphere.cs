@@ -22,6 +22,22 @@ public class Sphere : IShape
 
     public SurfaceInteraction ComputeSurfaceInteraction(Ray3f ray, in RayIntersectResult rir)
     {
+        /**
+         * 首先回忆一下球面坐标系和直角坐标系的转化
+         * x = r\sin\theta\cos\phi
+         * y = r\sin\theta\sin\phi
+         * z = r\cos\theta
+         * 反正\phi是横着转的轴的平面上的角度，\theta是竖着转的轴的平面上的角度，两个平面互相垂直
+         * 
+         * 众所周知，\phi\in[0,2\pi]，\theta\in[0,\pi]，我们可以通过线性变换，将它们都缩小到[0,1]范围
+         * u = \frac{\phi}{2\pi}
+         * v = \frac{\theta}{\pi}
+         *
+         * 计算dpdu：
+         * \frac{\partial P_x}{\partial u} = \frac{\partial}{\partial u}(r\sin\theta\cos\phi)
+         *                                 = r\sin\theta\frac{\partial}{cos\phi}
+         *                                 = r\sin\theta(-\sin\phi)
+         */
         throw new NotImplementedException();
     }
 
@@ -46,13 +62,9 @@ public class Sphere : IShape
          * c = (O - C)^2 - r^2
          * 解出t1, t2就可以求出射线与球是否有交点, 最近的交点就是最小的那个解
          *
-         * 此外
-         * https://www.realtimerendering.com/intersections.html
-         * 这里给出了进一步优化的文章与demo
-         *
          * 更进一步
          * https://github.com/mitsuba-renderer/mitsuba3/blob/f49fbb33738f8b154c3f7aa20f52632c7234957a/src/shapes/sphere.cpp#L495
-         * mitsuba给出了数值上更稳健的实现，通过虚拟一个垂直于光线的平面实现
+         * mitsuba给出了数值上更稳健的实现，通过虚拟一个垂直于光线且包含圆心的平面实现
          */
         Vector3f l = ray.O - Center;
         Vector3f d = ray.D;

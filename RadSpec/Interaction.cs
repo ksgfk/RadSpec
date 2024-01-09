@@ -23,9 +23,9 @@ public struct SurfaceInteraction
     public SampledWavelength Wavelength;
     public Vector2f UV;
     public CoordFrame Shading;
-    public Vector3f dPdU, dPdV;
+    public Vector3f dPdU, dPdV; //曲面上点P的参数化偏导数，位于切平面内，但不一定正交
     public ShapeRef Shape;
-    public Vector3f dNdU, dNdV;
+    public Vector3f dNdU, dNdV; //曲面上法向量的参数化偏导数，记录表面法线的微分变化情况，叉乘可以得到法向量
     public int PrimitiveIndex;
     public Vector2f dUVdX, dUVdY;
     public Vector3f Wi;

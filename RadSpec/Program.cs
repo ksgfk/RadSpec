@@ -31,7 +31,7 @@ img.ProcessPixelRows((a) =>
         }
     }
 });
-img.SaveAsPng("/Users/admin/Desktop/test.png");
+img.SaveAsPng("C:\\Users\\ksgfk\\test.png");
 Console.WriteLine("DONE");
 
 // static (bool, float) SphereIntersect(Ray3f ray, Vector3f center, float radius)
