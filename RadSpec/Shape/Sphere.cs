@@ -37,7 +37,56 @@ public class Sphere : IShape
          * \frac{\partial P_x}{\partial u} = \frac{\partial}{\partial u}(r\sin\theta\cos\phi)
          *                                 = r\sin\theta\frac{\partial}{cos\phi}
          *                                 = r\sin\theta(-\sin\phi)
+         * 巧了，看看球面坐标系和直角坐标系的转化的第二条，可以等价替换成 -y
+         * 同理可得
+         * \frac{\partial P_y}{\partial u} = r\sin\theta\sin\phi = x
+         * \frac{\partial P_z}{\partial u} = 0
+         * 因此
+         * \frac{\partial P}{\partial u} = (-y, x, 0)
+         * 计算dpdv，注意z可以等价替换r\cos\theta：
+         * \frac{\partial P_x}{\partial v} = r\cos\theta\cos\phi = z\cos\phi
+         * \frac{\partial P_y}{\partial v} = r\cos\theta\sin\phi = z\sin\phi
+         * \frac{\partial P_y}{\partial v} = r(-\sin\theta)
+         * 因此
+         * \frac{\partial P}{\partial v} = (z\cos\phi, z\sin\phi, -r\sin\theta))
+         *
+         * 怎么求sin{\theta}：
+         * 看xy平面，根据sin函数定义，有
+         * \sin\phi = \frac{y}{r} = \frac{y}{\sqrt{x^2+y^2}}
+         * 看球面坐标系和直角坐标系的转化第二个公式，稍微变换一下让sin\theta在左边
+         * \sin\theta=\frac{y}{r\sin\phi}
+         * 带入\sin\phi整理，有
+         * \sin\theta=\frac{\sqrt{x^2+y^2}}{r}
          */
+        float t = rir.T;
+        Vector3f n = Normalize(ray.At(t) - Center);
+        Vector3f worldP = Fma(n, Radius, Center);
+        Vector3f localP = Transform4f.Invert(_transform).ApplyAffine(worldP);
+
+        float theta = AngleBetweenUnitZ(localP);
+        float phi = float.Atan2(localP.Y, localP.X);
+        if (phi < 0)
+        {
+            phi += 2 * float.Pi;
+        }
+        Vector2f uv = Float2(phi / (2 * float.Pi), theta / float.Pi);
+
+        Vector3f dpdu = Float3(-localP.Y, localP.X, 0);
+        float zRadius = float.Sqrt(Sqr(localP.X) + Sqr(localP.Y));
+        Vector3f dpdv;
+        if (zRadius == 0)
+        {
+            dpdv = Float3(1, 0, 0);
+        }
+        else
+        {
+            float sinPhi = localP.Y / zRadius;
+            float cosPhi = localP.X / zRadius;
+            dpdv = Float3(localP.Z * cosPhi, localP.Z * sinPhi, -zRadius); //Z分量看上面注释，r\sin\theta = \sqrt{x^2+y^2}
+        }
+        dpdu = _transform.ApplyLinear(dpdu * 2 * float.Pi);
+        dpdv = _transform.ApplyLinear(dpdv * float.Pi);
+
         throw new NotImplementedException();
     }
 

@@ -147,16 +147,37 @@ public static partial class MathExt
         return xa < 1 ? x * c0 : double.CopySign(double.IsFinite(xb) ? xb : 1, x);
     }
 
-    public static (Vector3f b1, Vector3f b2) OrthoFrame(Vector3f n)
+    public static (Vector3f b1, Vector3f b2) OrthoCoordFrame(Vector3f n)
     {
-        // Building an Orthonormal Basis, Revisited (JCGT Vol 6, No 1, 2017)
-        // https://www.jcgt.org/published/0006/01/01/paper-lowres.pdf
+        /**
+         * https://www.pbr-book.org/4ed/Geometry_and_Transformations/Vectors#CoordinateSystemfromaVector
+         * 找到两个额外的归一化向量，使所有三个向量相互垂直（没说怎么推导的...）
+         *
+         * Building an Orthonormal Basis, Revisited (JCGT Vol 6, No 1, 2017)
+         * https://www.jcgt.org/published/0006/01/01/paper-lowres.pdf
+         * 这篇论文提出了让数值计算更稳健的方法
+         */
         float sign = float.CopySign(1.0f, n.Z);
         float a = -1.0f / (sign + n.Z);
         float b = n.X * n.Y * a;
         Vector3f b1 = new(1.0f + sign * n.X * n.X * a, sign * b, -sign * n.X);
         Vector3f b2 = new(b, sign + n.Y * n.Y * a, -n.Y);
         return (b1, b2);
+    }
+
+    public static float AngleBetweenUnitZ(Vector3f v)
+    {
+        /**
+         * 注意输入的向量应该是归一化后的
+         *
+         * 计算向量与z轴(0,0,1)的夹角
+         * 其实是在计算 acos(v.Z)
+         * http://www.plunk.org/~hatch/rightway.html
+         * https://github.com/mitsuba-renderer/drjit/blob/4e9b718a7c3012c61b51196afde960e0c0aa160d/include/drjit/sphere.h#L73
+         * 这里给出了更稳健的数值计算方法
+         */
+        float result = 2 * float.Asin(0.5f * Length(Float3(v.X, v.Y, v.Z - float.CopySign(1, v.Z))));
+        return v.Z >= 0 ? result : float.Pi - result;
     }
 }
 
