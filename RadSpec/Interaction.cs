@@ -1,17 +1,31 @@
 ﻿namespace RadSpec;
 
-public readonly struct RayIntersectResult(float t, Vector2f uv, int primitiveIndex, int shapeIndex, ShapeRef instance)
+public readonly struct RayIntersectResult(float t, Vector2f uv, int primitiveIndex, ShapeRef shape, ShapeRef instance)
 {
     public readonly float T = t;
     public readonly int PrimitiveIndex = primitiveIndex;
     public readonly Vector2f UV = uv;
-    public readonly int ShapeIndex = shapeIndex;
+    public readonly ShapeRef Shape = shape;
     public readonly ShapeRef Instance = instance;
 
     public bool IsHit => float.IsFinite(T);
-    public static RayIntersectResult Miss => new(float.PositiveInfinity, new(), 0, 0);
+    public static RayIntersectResult Miss => new(float.PositiveInfinity, default, default, default);
 
-    public RayIntersectResult(float t, Vector2f uv, int primitiveIndex, int shapeIndex) : this(t, uv, primitiveIndex, shapeIndex, ShapeRef.Invalid) { }
+    public RayIntersectResult(float t, Vector2f uv, int primitiveIndex, ShapeRef shape) : this(t, uv, primitiveIndex, ShapeRef.Invalid, shape) { }
+
+    public SurfaceInteraction ComputeSurfaceInteraction(Ray3f ray, Scene scene)
+    {
+        IShape shape = scene.GetShape(Shape);
+        SurfaceInteraction si = shape.ComputeSurfaceInteraction(ray, in this);
+        si.ComputeShadingFrame();
+        si.Time = ray.Time;
+        si.Wavelength = ray.Wavelength;
+        si.Shape = Shape;
+        si.PrimitiveIndex = PrimitiveIndex;
+        si.Wi = -ray.D;
+        si.Instance = Instance;
+        return si;
+    }
 }
 
 public struct SurfaceInteraction
@@ -30,4 +44,18 @@ public struct SurfaceInteraction
     public Vector2f dUVdX, dUVdY;
     public Vector3f Wi;
     public ShapeRef Instance;
+
+    public void ComputeShadingFrame()
+    {
+        if (dPdU == Vector3f.Zero)
+        {
+            var (s, _) = OrthoCoordFrame(Shading.N);
+            Shading.S = Normalize(s);
+        }
+        else
+        {
+            Shading.S = Normalize(GramSchmidt(Shading.N, dPdU));
+        }
+        Shading.T = Cross(Shading.N, Shading.S);
+    }
 }

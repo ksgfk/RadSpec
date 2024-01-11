@@ -4,6 +4,7 @@ public class Sphere : IShape
 {
     private readonly Transform4f _transform;
 
+    public ShapeRef Self { get; private set; }
     public float Radius { get; }
     public Vector3f Center { get; }
     public Matrix4x4f Rotate { get; }
@@ -162,6 +163,12 @@ public class Sphere : IShape
             return RayIntersectResult.Miss;
         }
         float t = nearT < 0 ? farT : nearT;
-        return new RayIntersectResult(t, new(), 0, 0);
+        return new RayIntersectResult(t, new(), 0, Self);
+    }
+
+    public void SetSelfRef(ShapeRef shape)
+    {
+        ShapeUtility.CheckIsInit(this);
+        Self = shape;
     }
 }

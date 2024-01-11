@@ -179,6 +179,25 @@ public static partial class MathExt
         float result = 2 * float.Asin(0.5f * Length(Float3(v.X, v.Y, v.Z - float.CopySign(1, v.Z))));
         return v.Z >= 0 ? result : float.Pi - result;
     }
+
+    public static Vector3f GramSchmidt(Vector3f w, Vector3f v)
+    {
+        /**
+         * https://pbr-book.org/4ed/Geometry_and_Transformations/Vectors#eq:gs-orthogonal-projection
+         * 施密特正交化
+         * 如果一个集合里所有向量都是两两垂直的，那么这个集合叫做正交集（Orthogonal Sets）
+         * 如果正交集里所有向量都是单位向量，它叫做标准正交集
+         * 施密特正交化是求一组基（basis）向量的正交集
+         * 
+         * 假设v是正交集的第一个向量v1
+         * 将w向v1投影，可以得到向量v1上的投影点p，如果将v1起点与p连接，可以得到w在v1上的投影向量w'
+         * 点p与w终点连接，就得到了我们需要的v2
+         * 根据向量减法的几何意义，这个连接可以转化为向量减法，v2 = w - w'
+         * 回忆一下，a和b点乘的几何意义是a在b上的投影长度
+         * 因此 w' = dot(v1, w)·w
+         */
+        return Fma(w, -Dot(w, v), v);
+    }
 }
 
 public static partial class MathExt
