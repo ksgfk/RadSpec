@@ -23,6 +23,8 @@ public class Sphere : IShape
     public SurfaceInteraction ComputeSurfaceInteraction(Ray3f ray, in RayIntersectResult rir)
     {
         /**
+         * https://pbr-book.org/4ed/Shapes/Spheres#IntersectionTests
+         *
          * 首先回忆一下球面坐标系和直角坐标系的转化
          * x = r\sin\theta\cos\phi
          * y = r\sin\theta\sin\phi
@@ -57,11 +59,16 @@ public class Sphere : IShape
          * \sin\theta=\frac{y}{r\sin\phi}
          * 带入\sin\phi整理，有
          * \sin\theta=\frac{\sqrt{x^2+y^2}}{r}
+         *
+         * 再来看看dndu和dndv，用到了微分几何的 Weingarten equations
+         * 嗯...其实就是dpdu和dpdv求一次二阶偏导数，然后照着公式带进去，就不自己算了
+         * mitsuba直接给出非常厉害的化简...dpdu和dpdv直接除以半径...
          */
         float t = rir.T;
         Vector3f n = Normalize(ray.At(t) - Center);
         Vector3f worldP = Fma(n, Radius, Center);
         Vector3f localP = Transform4f.Invert(_transform).ApplyAffine(worldP);
+        Frame shading = new() { N = n };
 
         float theta = AngleBetweenUnitZ(localP);
         float phi = float.Atan2(localP.Y, localP.X);
@@ -84,10 +91,24 @@ public class Sphere : IShape
             float cosPhi = localP.X / zRadius;
             dpdv = Float3(localP.Z * cosPhi, localP.Z * sinPhi, -zRadius); //Z分量看上面注释，r\sin\theta = \sqrt{x^2+y^2}
         }
-        dpdu = _transform.ApplyLinear(dpdu * 2 * float.Pi);
+        dpdu = _transform.ApplyLinear(dpdu * (2 * float.Pi));
         dpdv = _transform.ApplyLinear(dpdv * float.Pi);
 
-        throw new NotImplementedException();
+        Vector3f dndu = dpdu / Radius;
+        Vector3f dndv = dpdv / Radius;
+
+        return new SurfaceInteraction
+        {
+            P = worldP,
+            T = t,
+            N = n,
+            UV = uv,
+            Shading = shading,
+            dPdU = dpdu,
+            dPdV = dpdv,
+            dNdU = dndu,
+            dNdV = dndv
+        };
     }
 
     public RayIntersectResult RayIntersect(Ray3f ray, int primitiveIndex)
