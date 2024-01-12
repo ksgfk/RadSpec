@@ -5,39 +5,49 @@ using RadSpec.Shape;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-Sphere sphere = new(3, Float3(5, -1, 0), Matrix4x4f.Identity);
-const int width = 1280, height = 720;
-ThinLensCamera c = new(new(0, 0, -10), new(0, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);
-using var img = new Image<Rgba32>(width, height);
-img.ProcessPixelRows((a) =>
-{
-    for (int j = 0; j < height; j++)
-    {
-        var row = a.GetRowSpan(j);
-        for (int i = 0; i < row.Length; i++)
-        {
-            // float x = -1 + 2.0f / height * j;
-            // float y = -1 + 2.0f / width * i;
-            // Ray3f ray = new(Float3(x, y, -10), Float3(0, 0, 1), float.PositiveInfinity, 0, default);
-            Ray3f ray = c.SampleRay(0, default, new Vector2f(i / (width - 1.0f), j / (height - 1.0f)), default);
-            var rir = sphere.RayIntersect(ray, 0);
-            if (rir.IsHit)
-            {
-                var si = sphere.ComputeSurfaceInteraction(ray, in rir);
-                // Console.WriteLine($"{si.P} {si.N} {si.UV} {si.dPdU} {si.dPdV} {si.dNdU} {si.dNdV}");
-                // row[i] = new Rgba32(255, 255, 255, 255);
-                float t = float.Max(0, Dot(si.N, Normalize(Float3(1, 1, -1))));
-                row[i] = new Rgba32(t, t, t, 255);
-            }
-            else
-            {
-                row[i] = new Rgba32(0, 0, 0, 255);
-            }
-        }
-    }
-});
-img.SaveAsPng("/Users/admin/Desktop/test.png");
-Console.WriteLine("DONE");
+BoundingBox3f a = new(Float3(-1), Float3(1));
+Vector3f p = Float3(0,0,-2);
+Vector3f look = Float3(-1,-1,-1);
+var t = a.RayIntersect(p, Normalize(look - p));
+Console.WriteLine(t);
+
+// BoundingBox3f b = new(Float3(-1, -1, 1), Float3(0, 0, 2));
+// float t = a.Distance(b);
+// Console.WriteLine(t);
+
+// Sphere sphere = new(3, Float3(5, -1, 0), Matrix4x4f.Identity);
+// const int width = 1280, height = 720;
+// ThinLensCamera c = new(new(0, 0, -10), new(0, 0, 0), new(0, 1, 0), 90, (float)width / height, 0.1f, 100);
+// using var img = new Image<Rgba32>(width, height);
+// img.ProcessPixelRows((a) =>
+// {
+//     for (int j = 0; j < height; j++)
+//     {
+//         var row = a.GetRowSpan(j);
+//         for (int i = 0; i < row.Length; i++)
+//         {
+//             // float x = -1 + 2.0f / height * j;
+//             // float y = -1 + 2.0f / width * i;
+//             // Ray3f ray = new(Float3(x, y, -10), Float3(0, 0, 1), float.PositiveInfinity, 0, default);
+//             Ray3f ray = c.SampleRay(0, default, new Vector2f(i / (width - 1.0f), j / (height - 1.0f)), default);
+//             var rir = sphere.RayIntersect(ray, 0);
+//             if (rir.IsHit)
+//             {
+//                 var si = sphere.ComputeSurfaceInteraction(ray, in rir);
+//                 // Console.WriteLine($"{si.P} {si.N} {si.UV} {si.dPdU} {si.dPdV} {si.dNdU} {si.dNdV}");
+//                 // row[i] = new Rgba32(255, 255, 255, 255);
+//                 float t = float.Max(0, Dot(si.N, Normalize(Float3(1, 1, -1))));
+//                 row[i] = new Rgba32(t, t, t, 255);
+//             }
+//             else
+//             {
+//                 row[i] = new Rgba32(0, 0, 0, 255);
+//             }
+//         }
+//     }
+// });
+// img.SaveAsPng("/Users/admin/Desktop/test.png");
+// Console.WriteLine("DONE");
 
 // static (bool, float) SphereIntersect(Ray3f ray, Vector3f center, float radius)
 // {

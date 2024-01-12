@@ -7,7 +7,7 @@ public static partial class MathExt
     /// <summary>
     /// Pow(v, 2)
     /// </summary>
-    public static T Sqr<T>(T v) where T : INumber<T> => v * v;
+    public static T Sqr<T>(T v) where T : IMultiplyOperators<T, T, T> => v * v;
 
     // CreateChecked系列生成的代码就是piece of shit, 这个接口的静态虚函数在数学运算还是基本没法用
     // public static T Degree<T>(T radian) where T : IFloatingPoint<T> => T.CreateChecked(180) / T.Pi * radian;

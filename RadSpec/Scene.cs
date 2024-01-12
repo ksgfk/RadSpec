@@ -6,4 +6,14 @@ public class Scene
     {
         throw new NotImplementedException();
     }
+
+    public SurfaceInteraction RayIntersect(Ray3f ray)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool RayTest(Ray3f ray)
+    {
+        throw new NotImplementedException();
+    }
 }
