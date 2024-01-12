@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -112,7 +113,9 @@ public struct Vector4d : IVector<Vector4d, double>
     public readonly Vector4f AsFloat4() => new((float)X, (float)Y, (float)Z, (float)W);
     public readonly Vector4i AsInt4() => new((int)X, (int)Y, (int)Z, (int)W);
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector3d XYZ => new(X, Y, Z);
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector2d XY => new(X, Y);
 }
 

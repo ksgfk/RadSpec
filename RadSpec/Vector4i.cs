@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace RadSpec;
@@ -80,7 +81,9 @@ public struct Vector4i : IVector<Vector4i, int>
     public readonly Vector4f AsFloat4() => new(X, Y, Z, W);
     public readonly Vector4d AsDouble4() => new(X, Y, Z, W);
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector3i XYZ => new(X, Y, Z);
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector2i XY => new(X, Y);
 }
 

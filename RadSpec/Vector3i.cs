@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace RadSpec;
@@ -74,6 +75,7 @@ public struct Vector3i : IVector<Vector3i, int>
     public readonly Vector3d AsFloat3() => new(X, Y, Z);
     public readonly Vector3d AsDouble3() => new(X, Y, Z);
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector2i XY => new(X, Y);
 }
 

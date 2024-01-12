@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -110,6 +111,7 @@ public struct Vector3d : IVector<Vector3d, double>
     public readonly Vector3f AsFloat3() => new((float)X, (float)Y, (float)Z);
     public readonly Vector3i AsInt3() => new((int)X, (int)Y, (int)Z);
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector2d XY => new(X, Y);
 }
 

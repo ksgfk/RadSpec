@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.Numerics;
 
 namespace RadSpec;
 
 public struct Vector3f : IVector<Vector3f, float>
 {
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public Vector3 Value;
 
     public float X { readonly get => Value.X; set => Value.X = value; }
@@ -109,5 +111,6 @@ public struct Vector3f : IVector<Vector3f, float>
     public readonly Vector3d AsDouble3() => new(X, Y, Z);
     public readonly Vector3i AsInt3() => new((int)X, (int)Y, (int)Z);
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public readonly Vector2f XY => new(X, Y);
 }

@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.Numerics;
 
 namespace RadSpec;
 
 public struct Vector2f : IVector<Vector2f, float>
 {
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public Vector2 Value;
 
     public float X { readonly get => Value.X; set => Value.X = value; }

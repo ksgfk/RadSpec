@@ -5,11 +5,17 @@ using RadSpec.Shape;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-BoundingBox3f a = new(Float3(-1), Float3(1));
-Vector3f p = Float3(0,0,-2);
-Vector3f look = Float3(-1,-1,-1);
+BoundingBox3f a = new(Float3(-1), Float3(1.25f, 1.33f, 1.123f));
+Vector3f p = Float3(0, 0, -2);
+Vector3f look = Float3(-1, -1, -1);
 var t = a.RayIntersect(p, Normalize(look - p));
 Console.WriteLine(t);
+
+var n = Double3(1.2, 2.3, 3.4);
+var m = n.AsInt3();
+var o = Double4(1, 2, 3, 5);
+var z = o.AsInt4();
+Console.WriteLine($"{m} {z}");
 
 // BoundingBox3f b = new(Float3(-1, -1, 1), Float3(0, 0, 2));
 // float t = a.Distance(b);
