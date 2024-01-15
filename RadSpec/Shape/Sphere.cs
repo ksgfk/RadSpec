@@ -9,6 +9,7 @@ public class Sphere : IShape
     public Vector3f Center { get; }
     public Matrix4x4f Rotate { get; }
     public float SurfaceArea => 4 * float.Pi * Sqr(Radius);
+    public BoundingBox3f AllWorldBound => new(Center - Radius, Center + Radius);
 
     public Sphere(float radius, Vector3f center, Matrix4x4f rotate)
     {
@@ -171,4 +172,6 @@ public class Sphere : IShape
         ShapeUtility.CheckIsInit(this);
         Self = shape;
     }
+
+    public BoundingBox3f GetPrimitiveWorldBound(int primitiveIndex) => AllWorldBound;
 }

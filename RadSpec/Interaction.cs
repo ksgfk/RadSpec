@@ -13,7 +13,7 @@ public readonly struct RayIntersectResult(float t, Vector2f uv, int primitiveInd
 
     public RayIntersectResult(float t, Vector2f uv, int primitiveIndex, ShapeRef shape) : this(t, uv, primitiveIndex, ShapeRef.Invalid, shape) { }
 
-    public SurfaceInteraction ComputeSurfaceInteraction(Ray3f ray, Scene scene)
+    public SurfaceInteraction ComputeSurfaceInteraction(Ray3f ray, IScene scene)
     {
         IShape shape = scene.GetShape(Shape);
         SurfaceInteraction si = shape.ComputeSurfaceInteraction(ray, in this);

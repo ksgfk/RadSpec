@@ -21,8 +21,11 @@ public interface IShape
 {
     ShapeRef Self { get; }
     float SurfaceArea { get; }
+    BoundingBox3f AllWorldBound { get; }
 
     void SetSelfRef(ShapeRef shape);
+
+    BoundingBox3f GetPrimitiveWorldBound(int primitiveIndex);
 
     RayIntersectResult RayIntersect(Ray3f ray, int primitiveIndex);
 
