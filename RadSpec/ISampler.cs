@@ -38,4 +38,6 @@ public interface ISampler
     void Advance();
 
     ISampler Clone();
+
+    void SetSeed(int seed);
 }

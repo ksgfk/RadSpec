@@ -5,10 +5,17 @@ using RadSpec.Shape;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-Pcg32 pcg = new(Pcg32.PCG32_DEFAULT_STREAM, Pcg32.PCG32_DEFAULT_STATE);
+Pcg32 pcg = new(Pcg32.PCG32_DEFAULT_STREAM, 114514);
+
+int[] v = new int[10];
 for (int i = 0; i < 10; i++)
 {
-    Console.WriteLine(pcg.NextDouble());
+    v[i] = i;
+}
+pcg.Shuffle(v.AsSpan());
+foreach (var i in v)
+{
+    Console.WriteLine(i);
 }
 
 //BoundingBox3f a = new(Float3(-1), Float3(1.25f, 1.33f, 1.123f));
