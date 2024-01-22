@@ -1,6 +1,6 @@
 namespace RadSpec;
 
-public static class VectorUtility
+public static partial class VectorUtility
 {
     public static Vector2f Float2(float x, float y) => new(x, y);
     public static Vector2f Float2(float v) => new(v);
@@ -46,4 +46,21 @@ public static class VectorUtility
     public static Vector4i Int4(Vector2i xy, Vector2i zw) => new(xy, zw);
     public static Vector4i Int4(Vector3i xyz, int w) => new(xyz, w);
     public static Vector4i Int4(int x, Vector3i yzw) => new(x, yzw);
+}
+
+public static partial class VectorUtility
+{
+    public static Vector2f Atanh(Vector2f v) => new(float.Atanh(v.X), float.Atanh(v.Y));
+    public static Vector3f Atanh(Vector3f v) => new(float.Atanh(v.X), float.Atanh(v.Y), float.Atanh(v.Z));
+    public static Vector4f Atanh(Vector4f v) => new(float.Atanh(v.X), float.Atanh(v.Y), float.Atanh(v.Z), float.Atanh(v.W));
+    public static Vector2d Atanh(Vector2d v) => new(double.Atanh(v.X), double.Atanh(v.Y));
+    public static Vector3d Atanh(Vector3d v) => new(double.Atanh(v.X), double.Atanh(v.Y), double.Atanh(v.Z));
+    public static Vector4d Atanh(Vector4d v) => new(double.Atanh(v.X), double.Atanh(v.Y), double.Atanh(v.Z), double.Atanh(v.W));
+
+    public static Vector2f Cosh(Vector2f v) => new(float.Cosh(v.X), float.Cosh(v.Y));
+    public static Vector3f Cosh(Vector3f v) => new(float.Cosh(v.X), float.Cosh(v.Y), float.Cosh(v.Z));
+    public static Vector4f Cosh(Vector4f v) => new(float.Cosh(v.X), float.Cosh(v.Y), float.Cosh(v.Z), float.Cosh(v.W));
+    public static Vector2d Cosh(Vector2d v) => new(double.Cosh(v.X), double.Cosh(v.Y));
+    public static Vector3d Cosh(Vector3d v) => new(double.Cosh(v.X), double.Cosh(v.Y), double.Cosh(v.Z));
+    public static Vector4d Cosh(Vector4d v) => new(double.Cosh(v.X), double.Cosh(v.Y), double.Cosh(v.Z), double.Cosh(v.W));
 }

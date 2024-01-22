@@ -14,16 +14,13 @@ public class RgbFilm : IFilm
 
     public RgbFilm(
         Vector2i resolution,
-        IImageReconstruction reconstruction,
-        ISpectrum redResponse,
-        ISpectrum greenResponse,
-        ISpectrum blueResponse)
+        IImageReconstruction reconstruction)
     {
         Resolution = resolution;
         Reconstruction = reconstruction;
-        RedResponse = new DenselySampledSpectrum(redResponse);
-        GreenResponse = new DenselySampledSpectrum(greenResponse);
-        BlueResponse = new DenselySampledSpectrum(blueResponse);
+        RedResponse = Spectra.Cie1931X;
+        GreenResponse = Spectra.Cie1931Y;
+        BlueResponse = Spectra.Cie1931Z;
 
         _pixels = new Vector4d[Resolution.X * Resolution.Y];
     }

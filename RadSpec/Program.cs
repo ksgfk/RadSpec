@@ -6,52 +6,52 @@ using RadSpec.Shape;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-int sc = 100;
-int pl = 2;
-{
-    StratifiedSampler s = new(sc, DateTime.Now.Ticks, true);
-    List<Vector2f> v = new();
-    for (int i = 0; i < sc; i++)
-    {
-        for (int j = 0; j < pl; j++)
-        {
-            var t = s.Next2D();
-            v.Add(t);
-        }
-    }
-    using StreamWriter sw = new(File.Open("/Users/admin/Desktop/rng1.txt", FileMode.Create));
-    sw.WriteLine(v.Count);
-    foreach (var i in v)
-    {
-        sw.WriteLine(i.X);
-    }
-    foreach (var i in v)
-    {
-        sw.WriteLine(i.Y);
-    }
-}
-{
-    IndependentSampler s = new(DateTime.Now.Ticks, sc);
-    List<Vector2f> v = new();
-    for (int i = 0; i < sc; i++)
-    {
-        for (int j = 0; j < pl; j++)
-        {
-            var t = s.Next2D();
-            v.Add(t);
-        }
-    }
-    using StreamWriter sw = new(File.Open("/Users/admin/Desktop/rng2.txt", FileMode.Create));
-    sw.WriteLine(v.Count);
-    foreach (var i in v)
-    {
-        sw.WriteLine(i.X);
-    }
-    foreach (var i in v)
-    {
-        sw.WriteLine(i.Y);
-    }
-}
+// int sc = 100;
+// int pl = 2;
+// {
+//     StratifiedSampler s = new(sc, DateTime.Now.Ticks, true);
+//     List<Vector2f> v = new();
+//     for (int i = 0; i < sc; i++)
+//     {
+//         for (int j = 0; j < pl; j++)
+//         {
+//             var t = s.Next2D();
+//             v.Add(t);
+//         }
+//     }
+//     using StreamWriter sw = new(File.Open("/Users/admin/Desktop/rng1.txt", FileMode.Create));
+//     sw.WriteLine(v.Count);
+//     foreach (var i in v)
+//     {
+//         sw.WriteLine(i.X);
+//     }
+//     foreach (var i in v)
+//     {
+//         sw.WriteLine(i.Y);
+//     }
+// }
+// {
+//     IndependentSampler s = new(DateTime.Now.Ticks, sc);
+//     List<Vector2f> v = new();
+//     for (int i = 0; i < sc; i++)
+//     {
+//         for (int j = 0; j < pl; j++)
+//         {
+//             var t = s.Next2D();
+//             v.Add(t);
+//         }
+//     }
+//     using StreamWriter sw = new(File.Open("/Users/admin/Desktop/rng2.txt", FileMode.Create));
+//     sw.WriteLine(v.Count);
+//     foreach (var i in v)
+//     {
+//         sw.WriteLine(i.X);
+//     }
+//     foreach (var i in v)
+//     {
+//         sw.WriteLine(i.Y);
+//     }
+// }
 
 //BoundingBox3f a = new(Float3(-1), Float3(1.25f, 1.33f, 1.123f));
 //Vector3f p = Float3(0, 0, -2);

@@ -9,11 +9,13 @@ public class ThinLensCamera : ICamera
     public float Aspect { get; }
     public float Near { get; }
     public float Far { get; }
+    public IFilm Film { get; }
+    public ISampler Sampler { get; }
 
     private readonly Transform4f _cameraToWorld;
     private readonly Transform4f _screenToCamera;
 
-    public ThinLensCamera(Vector3f position, Vector3f target, Vector3f up, float fov, float aspect, float near, float far)
+    public ThinLensCamera(IFilm film, ISampler sampler, Vector3f position, Vector3f target, Vector3f up, float fov, float aspect, float near, float far)
     {
         Position = position;
         Target = target;
@@ -22,6 +24,8 @@ public class ThinLensCamera : ICamera
         Aspect = aspect;
         Near = near;
         Far = far;
+        Film = film;
+        Sampler = sampler;
 
         Transform4f worldToCamera = Transform4f.LookAt(Position, Target, Up);
         _cameraToWorld = Transform4f.Invert(worldToCamera);
@@ -45,6 +49,14 @@ public class ThinLensCamera : ICamera
 
     public SampledWavelength SampleWavelengths(float xi)
     {
-        throw new NotImplementedException();
+        Vector4f shift = Float4(0, 1.0f / 4, 2.0f / 4, 3.0f / 4);
+        Vector4f value = Float4(xi) + shift;
+        if (value.X > 1) value.X -= 1;
+        if (value.Y > 1) value.Y -= 1;
+        if (value.Z > 1) value.Z -= 1;
+        if (value.W > 1) value.W -= 1;
+        Vector4f lambda = Warp.UniformToVisibleWavelength(value);
+        Vector4f pdf = Warp.UniformToVisibleWavelengthPdf(lambda);
+        return new SampledWavelength(lambda, pdf);
     }
 }

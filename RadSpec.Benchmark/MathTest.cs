@@ -77,3 +77,35 @@ public class Erf
         return MathExt.ErfMitsuba(x);
     }
 }
+
+[DisassemblyDiagnoser(printInstructionAddresses: true)]
+public class UniformToVisibleWavelength
+{
+    public static IEnumerable<object> Gen()
+    {
+        yield return 0.21413f;
+    }
+
+    [Benchmark(Baseline = true)]
+    [ArgumentsSource(nameof(Gen))]
+    public float Raw(float x) => RawFormula(x);
+
+    [Benchmark]
+    [ArgumentsSource(nameof(Gen))]
+    public float Simple(float x) => Warp.UniformToVisibleWavelength(x);
+
+    private static float RawFormula(double xi)
+    {
+        const double VisWaveA = 0.0072;
+        const double VisWaveB = 538.0;
+
+        double integral = 1 / VisWaveA * (double.Tanh(VisWaveA * (Spectra.LambdaMax - VisWaveB)) - double.Tanh(VisWaveA * (Spectra.LambdaMin - VisWaveB)));
+        double invVisWaveIntegral = 1 / integral;
+        const double a = VisWaveA;
+        const double b = VisWaveB;
+        double c = invVisWaveIntegral;
+        double d = c * (1 / VisWaveA * double.Tanh(VisWaveA * (Spectra.LambdaMin - VisWaveB)));
+        double result = 1 / a * double.Atanh(a / c * (xi + d)) + b;
+        return (float)result;
+    }
+}
