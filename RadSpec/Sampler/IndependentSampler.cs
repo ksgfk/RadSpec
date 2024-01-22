@@ -2,21 +2,19 @@ namespace RadSpec.Sampler;
 
 public class IndependentSampler : ISampler
 {
+    private readonly long _seed;
     private readonly Pcg32 _rng;
 
     public int SampleCount { get; }
 
-    public IndependentSampler(ulong seed, int sampleCount) : this(new Pcg32(offset: seed), sampleCount) { }
-
-    private IndependentSampler(Pcg32 rng, int sampleCount)
+    public IndependentSampler(long seed, int sampleCount)
     {
-        _rng = rng;
+        _seed = seed;
         SampleCount = sampleCount;
+        _rng = new Pcg32(unchecked((ulong)_seed));
     }
 
-    public void Advance() { }
-
-    public ISampler Clone() => new IndependentSampler(new Pcg32(_rng), SampleCount);
+    public ISampler Clone() => new IndependentSampler(_seed, SampleCount);
 
     public float Next1D() => _rng.NextSingle();
 
@@ -27,5 +25,8 @@ public class IndependentSampler : ISampler
         return new Vector2f(a, b);
     }
 
-    public void SetSeed(int seed) => _rng.SetSeed((ulong)seed);
+    public void StartPixel(Vector2i pos, int sampleIndex, int dimension)
+    {
+        _rng.SetSeed((ulong)MurmurHash64A(_seed, pos.X, pos.Y));
+    }
 }

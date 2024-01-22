@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace RadSpec;
 
@@ -198,22 +199,55 @@ public static partial class MathExt
          */
         return Fma(w, -Dot(w, v), v);
     }
+
+    public static uint PermuteKensler(uint index, uint sampleCount, uint seed)
+    {
+        // https://graphics.pixar.com/library/MultiJitteredSampling/
+        if (sampleCount == 1)
+        {
+            return 0;
+        }
+        uint w = sampleCount - 1;
+        w |= w >> 1;
+        w |= w >> 2;
+        w |= w >> 4;
+        w |= w >> 8;
+        w |= w >> 16;
+        do
+        {
+            uint tmp = index;
+            tmp ^= seed;
+            tmp *= 0xe170893d;
+            tmp ^= seed >> 16;
+            tmp ^= (tmp & w) >> 4;
+            tmp ^= seed >> 8;
+            tmp *= 0x0929eb3f;
+            tmp ^= seed >> 23;
+            tmp ^= (tmp & w) >> 1;
+            tmp *= 1 | seed >> 27;
+            tmp *= 0x6935fa69;
+            tmp ^= (tmp & w) >> 11;
+            tmp *= 0x74dcb303;
+            tmp ^= (tmp & w) >> 2;
+            tmp *= 0x9e501cc3;
+            tmp ^= (tmp & w) >> 2;
+            tmp *= 0xc860a3df;
+            tmp &= w;
+            tmp ^= tmp >> 5;
+            index = tmp;
+        } while (index >= sampleCount);
+        return (index + seed) % sampleCount;
+    }
 }
 
 public static partial class MathExt
 {
     public static T Pow3<T>(T v) where T : INumber<T> => Sqr(v) * v;
-
     public static T Pow4<T>(T v) where T : INumber<T> => Pow3(v) * v;
-
     public static T Pow5<T>(T v) where T : INumber<T> => Pow4(v) * v;
-
     public static T Pow6<T>(T v) where T : INumber<T> => Pow5(v) * v;
-
     public static T Pow7<T>(T v) where T : INumber<T> => Pow6(v) * v;
-
     public static T Pow8<T>(T v) where T : INumber<T> => Pow7(v) * v;
-
     public static T Pow9<T>(T v) where T : INumber<T> => Pow8(v) * v;
 }
 
@@ -324,4 +358,92 @@ public static partial class MathExt
     }
 
     public static double Estrin(double x, double a0, double a1) => double.FusedMultiplyAdd(x, a1, a0);
+}
+
+public static partial class MathExt
+{
+    //https://github.com/explosion/murmurhash/blob/bbf68f6e15c5c01eba74891ff7851cd1c3b32e96/murmurhash/MurmurHash2.cpp#L130
+    public static long MurmurHash64A(long seed, long a)
+    {
+        const ulong m = 0xc6a4a7935bd1e995ul;
+        const int r = 47;
+        const int len = 16;
+        ulong h = unchecked((ulong)seed) ^ unchecked(len * m);
+        {
+            ulong k = unchecked((ulong)a);
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+            h ^= k;
+            h *= m;
+        }
+        h ^= h >> r;
+        h *= m;
+        h ^= h >> r;
+        return unchecked((long)h);
+    }
+
+    public static long MurmurHash64A(long seed, long a, long b)
+    {
+        const ulong m = 0xc6a4a7935bd1e995ul;
+        const int r = 47;
+        const int len = 16;
+        ulong h = unchecked((ulong)seed) ^ unchecked(len * m);
+        {
+            ulong k = unchecked((ulong)a);
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+            h ^= k;
+            h *= m;
+        }
+        {
+            ulong k = unchecked((ulong)b);
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+            h ^= k;
+            h *= m;
+        }
+        h ^= h >> r;
+        h *= m;
+        h ^= h >> r;
+        return unchecked((long)h);
+    }
+
+    public static long MurmurHash64A(long seed, long a, long b, long c)
+    {
+        const ulong m = 0xc6a4a7935bd1e995ul;
+        const int r = 47;
+        const int len = 16;
+        ulong h = unchecked((ulong)seed) ^ unchecked(len * m);
+        {
+            ulong k = unchecked((ulong)a);
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+            h ^= k;
+            h *= m;
+        }
+        {
+            ulong k = unchecked((ulong)b);
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+            h ^= k;
+            h *= m;
+        }
+        {
+            ulong k = unchecked((ulong)c);
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+            h ^= k;
+            h *= m;
+        }
+        h ^= h >> r;
+        h *= m;
+        h ^= h >> r;
+        return unchecked((long)h);
+    }
 }

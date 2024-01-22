@@ -16,13 +16,9 @@ public class Pcg32
     private ulong _state;
     private ulong _inc;
 
-    public Pcg32(ulong seqIndex = PCG32_DEFAULT_STREAM, ulong offset = PCG32_DEFAULT_STATE)
+    public Pcg32(ulong seed = PCG32_DEFAULT_STATE, ulong initSeq = PCG32_DEFAULT_STREAM)
     {
-        _state = 0;
-        _inc = (seqIndex << 1) | 1;
-        NextUInt32();
-        _state += offset;
-        NextUInt32();
+        SetSeed(seed, initSeq);
     }
 
     public Pcg32(Pcg32 other)
@@ -31,10 +27,11 @@ public class Pcg32
         _inc = other._inc;
     }
 
-    public void SetSeed(ulong seed)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SetSeed(ulong seed, ulong initSeq = PCG32_DEFAULT_STREAM)
     {
         _state = 0;
-        _inc = (PCG32_DEFAULT_STREAM << 1) | 1;
+        _inc = (initSeq << 1) | 1;
         NextUInt32();
         _state += seed;
         NextUInt32();

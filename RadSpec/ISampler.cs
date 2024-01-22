@@ -31,13 +31,11 @@ public interface ISampler
 {
     int SampleCount { get; }
 
+    void StartPixel(Vector2i pos, int sampleIndex, int dimension);
+
     float Next1D();
 
     Vector2f Next2D();
 
-    void Advance();
-
     ISampler Clone();
-
-    void SetSeed(int seed);
 }
