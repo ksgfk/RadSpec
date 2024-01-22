@@ -1,6 +1,6 @@
 namespace RadSpec.Camera;
 
-public class ThinLensCamera : ICamera
+public class PerspectiveCamera : ICamera
 {
     public Vector3f Position { get; }
     public Vector3f Target { get; }
@@ -15,13 +15,13 @@ public class ThinLensCamera : ICamera
     private readonly Transform4f _cameraToWorld;
     private readonly Transform4f _screenToCamera;
 
-    public ThinLensCamera(IFilm film, ISampler sampler, Vector3f position, Vector3f target, Vector3f up, float fov, float aspect, float near, float far)
+    public PerspectiveCamera(IFilm film, ISampler sampler, Vector3f position, Vector3f target, Vector3f up, float fov, float near, float far)
     {
         Position = position;
         Target = target;
         Up = up;
         Fov = Radian(fov);
-        Aspect = aspect;
+        Aspect = (float)film.Resolution.X / film.Resolution.Y;
         Near = near;
         Far = far;
         Film = film;
@@ -29,8 +29,8 @@ public class ThinLensCamera : ICamera
 
         Transform4f worldToCamera = Transform4f.LookAt(Position, Target, Up);
         _cameraToWorld = Transform4f.Invert(worldToCamera);
-        Transform4f cameraToScreen = Transform4f.Scale(0.5f, -0.5f * aspect, 1.0f) *
-            Transform4f.Translate(1.0f, -1.0f / aspect, 0.0f) *
+        Transform4f cameraToScreen = Transform4f.Scale(0.5f, -0.5f * Aspect, 1.0f) *
+            Transform4f.Translate(1.0f, -1.0f / Aspect, 0.0f) *
             Transform4f.Perspective(Fov, Near, Far);
         _screenToCamera = Transform4f.Invert(cameraToScreen);
     }

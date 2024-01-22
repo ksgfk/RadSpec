@@ -6,52 +6,26 @@ using RadSpec.Shape;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-// int sc = 100;
-// int pl = 2;
-// {
-//     StratifiedSampler s = new(sc, DateTime.Now.Ticks, true);
-//     List<Vector2f> v = new();
-//     for (int i = 0; i < sc; i++)
-//     {
-//         for (int j = 0; j < pl; j++)
-//         {
-//             var t = s.Next2D();
-//             v.Add(t);
-//         }
-//     }
-//     using StreamWriter sw = new(File.Open("/Users/admin/Desktop/rng1.txt", FileMode.Create));
-//     sw.WriteLine(v.Count);
-//     foreach (var i in v)
-//     {
-//         sw.WriteLine(i.X);
-//     }
-//     foreach (var i in v)
-//     {
-//         sw.WriteLine(i.Y);
-//     }
-// }
-// {
-//     IndependentSampler s = new(DateTime.Now.Ticks, sc);
-//     List<Vector2f> v = new();
-//     for (int i = 0; i < sc; i++)
-//     {
-//         for (int j = 0; j < pl; j++)
-//         {
-//             var t = s.Next2D();
-//             v.Add(t);
-//         }
-//     }
-//     using StreamWriter sw = new(File.Open("/Users/admin/Desktop/rng2.txt", FileMode.Create));
-//     sw.WriteLine(v.Count);
-//     foreach (var i in v)
-//     {
-//         sw.WriteLine(i.X);
-//     }
-//     foreach (var i in v)
-//     {
-//         sw.WriteLine(i.Y);
-//     }
-// }
+IImageReconstruction reconstruction = new GaussianReconstruction(Float2(2), 0.5f);
+IFilm film = new RgbFilm(Int2(1280, 720), reconstruction);
+ISampler sampler = new StratifiedSampler(9, DateTime.Now.Ticks, true);
+ICamera camera = new PerspectiveCamera(
+    film, sampler,
+    Float3(0, 0, -10), Float3(0, 0, 0), Float3(0, 1, 0), 30, 0.01f, 1000);
+IShape sphere = new Sphere(2.0f, Float3(0, 0, 0), Matrix4x4f.Identity);
+for (int j = 0; j < film.Resolution.Y; j++)
+{
+    for (int i = 0; i < film.Resolution.X; i++)
+    {
+        for (int k = 0; k < sampler.SampleCount; k++)
+        {
+            sampler.StartPixel(Int2(i, j), k, 0);
+            SampledWavelength wavelength = camera.SampleWavelengths(sampler.Next1D());
+            Ray3f ray = camera.SampleRay(0, sampler.Next1D(), sampler.Next2D(), sampler.Next2D());
+            //TODO: bsdf的反射率怎么搞？
+        }
+    }
+}
 
 //BoundingBox3f a = new(Float3(-1), Float3(1.25f, 1.33f, 1.123f));
 //Vector3f p = Float3(0, 0, -2);
